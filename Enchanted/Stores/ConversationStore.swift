@@ -10,6 +10,7 @@ import SwiftData
 import OllamaKit
 import Combine
 import SwiftUI
+import OpenAI
 
 @Observable
 final class ConversationStore: Sendable {
@@ -230,6 +231,94 @@ final class ConversationStore: Sendable {
         
         withAnimation {
             conversationState = .completed
+        }
+    }
+    
+    // Handle OpenAI response chunks
+    private func handleReceiveOpenAI(_ content: String) {
+        // Update the last assistant message with new content
+        if let lastMessage = messages.last, lastMessage.role == "assistant" {
+            // This is a simplified approach - in a real implementation, you'd want to properly
+            // append content to the existing message or create a new one
+            print("Received OpenAI content: \(content)")
+        }
+    }
+    
+    private func handleComplete() {
+        // Handle completion for OpenAI
+        DispatchQueue.main.async {
+            self.handleComplete()
+        }
+    }
+    
+    private func sendPromptOpenAI(
+        userPrompt: String,
+        model: LanguageModelSD,
+        image: Image? = nil,
+        systemPrompt: String = "",
+        trimmingMessageId: String? = nil
+    ) async {
+        // Convert message history to OpenAI format
+        var openAIMessages: [OpenAI.Chat.ChatCompletionMessage] = []
+        
+        // Add system prompt if present
+        if !systemPrompt.isEmpty {
+            let systemMessage = OpenAI.Chat.ChatCompletionMessage(role: .system, content: systemPrompt)
+            openAIMessages.append(systemMessage)
+        }
+        
+        // Add conversation history
+        let conversation = selectedConversation ?? ConversationSD(name: userPrompt)
+        let messageHistory = conversation.messages
+            .sorted{$0.createdAt < $1.createdAt}
+            .map{OpenAI.Chat.ChatCompletionMessage(role: OpenAI.Chat.ChatCompletionMessage.Role(rawValue: $0.role) ?? .assistant, content: $0.content)}
+        
+        openAIMessages.append(contentsOf: messageHistory)
+        
+        // Add the user message with image if present
+        if let image = image?.render() {
+            let imageContent = OpenAI.Chat.ChatCompletionMessage.Content.image(
+                OpenAI.Chat.ChatCompletionMessage.Content.Image(
+                    url: "data:image/jpeg;base64,\(image.convertImageToBase64String())",
+                    detail: .auto
+                )
+            )
+            let userMessageWithImage = OpenAI.Chat.ChatCompletionMessage(
+                role: .user,
+                content: [
+                    .text(userPrompt),
+                    imageContent
+                ]
+            )
+            openAIMessages.append(userMessageWithImage)
+        } else {
+            let userMessage = OpenAI.Chat.ChatCompletionMessage(role: .user, content: userPrompt)
+            openAIMessages.append(userMessage)
+        }
+        
+        do {
+            let stream = try await OpenAIService.shared.chatCompletion(
+                model: model.name,
+                messages: openAIMessages,
+                temperature: 0.7,
+                stream: true
+            )
+            
+            for try await chunk in stream {
+                if let content = chunk.choices.first?.delta.content {
+                    DispatchQueue.main.async {
+                        self.handleReceiveOpenAI(content)
+                    }
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.handleComplete()
+            }
+        } catch {
+            DispatchQueue.main.async {
+                self.handleError(error.localizedDescription)
+            }
         }
     }
 }

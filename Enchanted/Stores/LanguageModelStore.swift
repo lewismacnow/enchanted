@@ -27,9 +27,11 @@ final class LanguageModelStore {
             // check if model still exists
             if models.contains(model) {
                 selectedModel = model
+                supportsImages = model.supportsImages
             }
         } else {
             selectedModel = nil
+            supportsImages = false
         }
     }
     
@@ -47,20 +49,50 @@ final class LanguageModelStore {
     }
     
     func loadModels() async throws {
-        let remoteModels = try await OllamaService.shared.getModels()
-        try await swiftDataService.saveModels(models: remoteModels.map{LanguageModelSD(name: $0.name, imageSupport: $0.imageSupport, modelProvider: .ollama)})
+        // Load models from both Ollama and OpenAI
+        var allModels: [LanguageModelSD] = []
         
+        // Load Ollama models
+        do {
+            let ollamaModels = try await OllamaService.shared.getModels()
+            let ollamaModelSDs = ollamaModels.map { LanguageModelSD(name: $0.name, imageSupport: $0.imageSupport, modelProvider: .ollama) }
+            allModels.append(contentsOf: ollamaModelSDs)
+        } catch {
+            print("Failed to load Ollama models: \(error)")
+        }
+        
+        // Load OpenAI models
+        do {
+            let openAIModels = try await OpenAIService.shared.getModels()
+            let openAIModelSDs = openAIModels.map { LanguageModelSD(name: $0.name, imageSupport: $0.imageSupport, modelProvider: .openai) }
+            allModels.append(contentsOf: openAIModelSDs)
+        } catch {
+            print("Failed to load OpenAI models: \(error)")
+        }
+        
+        // Save all models to local storage
+        try await swiftDataService.saveModels(models: allModels)
+        
+        // Fetch stored models
         let storedModels = (try? await swiftDataService.fetchModels()) ?? []
         
         DispatchQueue.main.async {
-            let remoteModelNames = remoteModels.map { $0.name }
-            self.models = storedModels.filter{remoteModelNames.contains($0.name)}
+            let allModelNames = allModels.map { $0.name }
+            self.models = storedModels.filter { allModelNames.contains($0.name) }
+            
+            // Set first model as selected if none selected
+            if self.selectedModel == nil && !self.models.isEmpty {
+                self.selectedModel = self.models.first
+                self.supportsImages = self.selectedModel?.supportsImages ?? false
+            }
         }
     }
     
     func deleteAllModels() async throws {
         DispatchQueue.main.async {
             self.models = []
+            self.selectedModel = nil
+            self.supportsImages = false
         }
         try await swiftDataService.deleteModels()
     }

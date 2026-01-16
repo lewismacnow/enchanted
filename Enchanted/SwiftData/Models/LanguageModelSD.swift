@@ -28,6 +28,17 @@ final class LanguageModelSD: Identifiable {
     @Transient var isNotAvailable: Bool {
         isAvailable == false
     }
+    
+    @Transient var providerName: String {
+        switch modelProvider {
+        case .ollama:
+            return "Ollama"
+        case .openai:
+            return "OpenAI"
+        case .none:
+            return "Unknown"
+        }
+    }
 }
 
 // MARK: - Helpers

@@ -48,6 +48,13 @@ final class Clipboard: Sendable {
         return NSPasteboard.general.string(forType: .string)
 #endif
     }
+    
+    /// Paste from clipboard - handles both text and images
+    func paste() -> (text: String?, image: PlatformImage?) {
+        let text = getText()
+        let image = getImage()
+        return (text, image)
+    }
 }
 
 

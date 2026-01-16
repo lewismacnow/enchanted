@@ -30,6 +30,13 @@ struct PromptPanelView: View {
                 if let clipboardText = Clipboard.shared.getText() {
                     prompt = clipboardText
                 }
+            },
+            HotkeyCombination(keyBase: [.command], key: .kVK_ANSI_V) {
+                // Paste image from clipboard
+                if let nsImage = Clipboard.shared.getImage() {
+                    let image = Image(nsImage: nsImage)
+                    updateSelectedImage(image)
+                }
             }
         ]
     }
