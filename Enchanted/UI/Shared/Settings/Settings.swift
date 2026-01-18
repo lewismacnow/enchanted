@@ -23,6 +23,10 @@ struct Settings: View {
     @AppStorage("pingInterval") private var pingInterval: String = "5"
     @AppStorage("voiceIdentifier") private var voiceIdentifier: String = ""
     
+    // Add missing OpenAI settings
+    @AppStorage("openAIUri") private var openAIUri: String = "https://api.openai.com/v1"
+    @AppStorage("openAIKey") private var openAIKey: String = ""
+    
     @StateObject private var speechSynthesiser = SpeechSynthesizer.shared
     
     @Environment(\.presentationMode) var presentationMode
@@ -65,14 +69,16 @@ struct Settings: View {
     var body: some View {
         SettingsView(
             ollamaUri: $ollamaUri,
-            systemPrompt: $systemPrompt, 
+            systemPrompt: $systemPrompt,
             vibrations: $vibrations,
             colorScheme: $colorScheme,
-            defaultOllamModel: $defaultOllamaModel, 
+            defaultOllamModel: $defaultOllamaModel,
             ollamaBearerToken: $ollamaBearerToken,
             appUserInitials: $appUserInitials,
             pingInterval: $pingInterval,
             voiceIdentifier: $voiceIdentifier,
+            openAIUri: $openAIUri,  // Pass binding
+            openAIKey: $openAIKey,  // Pass binding
             save: save,
             checkServer: checkServer,
             deleteAll: deleteAll,

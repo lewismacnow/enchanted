@@ -49,7 +49,7 @@ final class LanguageModelStore {
     }
     
     func loadModels() async throws {
-        // Load models from both Ollama and OpenAI
+        // Load models from Ollama only (OpenAI integration temporarily disabled)
         var allModels: [LanguageModelSD] = []
         
         // Load Ollama models
@@ -59,15 +59,6 @@ final class LanguageModelStore {
             allModels.append(contentsOf: ollamaModelSDs)
         } catch {
             print("Failed to load Ollama models: \(error)")
-        }
-        
-        // Load OpenAI models
-        do {
-            let openAIModels = try await OpenAIService.shared.getModels()
-            let openAIModelSDs = openAIModels.map { LanguageModelSD(name: $0.name, imageSupport: $0.imageSupport, modelProvider: .openai) }
-            allModels.append(contentsOf: openAIModelSDs)
-        } catch {
-            print("Failed to load OpenAI models: \(error)")
         }
         
         // Save all models to local storage

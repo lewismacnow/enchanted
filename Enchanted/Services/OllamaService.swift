@@ -19,18 +19,22 @@ class OllamaService: @unchecked Sendable {
     }
     
     func initEndpoint(url: String? = nil, bearerToken: String? = "okki") {
+        // Use default values for now
         let defaultUrl = "http://localhost:11434"
         let localStorageUrl = UserDefaults.standard.string(forKey: "ollamaUri")
-        let bearerToken = UserDefaults.standard.string(forKey: "ollamaBearerToken")
-        if var ollamaUrl = [localStorageUrl, defaultUrl].compactMap({$0}).filter({$0.count > 0}).first {
-            if !ollamaUrl.contains("http") {
-                ollamaUrl = "http://" + ollamaUrl
-            }
-            
-            if let url = URL(string: ollamaUrl) {
-                ollamaKit =  OllamaKit(baseURL: url, bearerToken: bearerToken)
-                return
-            }
+        let localStorageBearerToken = UserDefaults.standard.string(forKey: "ollamaBearerToken")
+        
+        let ollamaUrl = url ?? localStorageUrl ?? defaultUrl
+        let token = bearerToken ?? localStorageBearerToken ?? "okki"
+        
+        var finalUrl = ollamaUrl
+        if !finalUrl.contains("http") {
+            finalUrl = "http://" + finalUrl
+        }
+        
+        if let url = URL(string: finalUrl) {
+            ollamaKit =  OllamaKit(baseURL: url, bearerToken: token)
+            return
         }
     }
     

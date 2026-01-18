@@ -7,6 +7,8 @@
 
 import SwiftUI
 import AVFoundation
+import Foundation
+import Combine
 
 struct SettingsView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -19,12 +21,15 @@ struct SettingsView: View {
     @Binding var appUserInitials: String
     @Binding var pingInterval: String
     @Binding var voiceIdentifier: String
+    @Binding var openAIUri: String
+    @Binding var openAIKey: String
     @State var ollamaStatus: Bool?
     var save: () -> ()
     var checkServer: () -> ()
     var deleteAll: () -> ()
     var ollamaLangugeModels: [LanguageModelSD]
     var voices: [AVSpeechSynthesisVoice]
+    @State private var appStore = AppStore.shared
     
     @State private var deleteConversationsDialog = false
     
@@ -62,6 +67,18 @@ struct SettingsView: View {
             .padding()
             
             Form {
+                Section(header: Text("Provider").font(.headline)) {
+                    // Fix: Use ProviderSettings.ProviderType explicitly
+                    Picker(selection: $appStore.providerSettings.provider) {
+                        ForEach(ProviderSettings.ProviderType.allCases, id:\.self) { provider in
+                            Text(provider.rawValue).tag(provider)
+                        }
+                    } label: {
+                        Label("LLM Provider", systemImage: "server.rack")
+                            .foregroundStyle(Color.label)
+                    }
+                }
+                
                 Section(header: Text("Ollama").font(.headline)) {
                     
                     TextField("Ollama server URI", text: $ollamaUri, onCommit: checkServer)
@@ -110,6 +127,21 @@ struct SettingsView: View {
                     TextField("Ping Interval (seconds)", text: $pingInterval)
                         .disableAutocorrection(true)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
+                    
+                    Section(header: Text("OpenAI").font(.headline)) {
+                        TextField("OpenAI server URI", text: $openAIUri)
+                            .textContentType(.URL)
+                            .disableAutocorrection(true)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+#if !os(macOS)
+                            .keyboardType(.URL)
+                            .autocapitalization(.none)
+#endif
+                        
+                        TextField("API Key", text: $openAIKey)
+                            .disableAutocorrection(true)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                    }
                     
                     Section(header: Text("APP").font(.headline).padding(.top, 20)) {
                         
@@ -209,6 +241,8 @@ struct SettingsView: View {
         appUserInitials: .constant("AM"),
         pingInterval: .constant("5"),
         voiceIdentifier: .constant("sample"),
+        openAIUri: .constant("http://localhost:11434/v1"),
+        openAIKey: .constant("not-needed"),
         save: {},
         checkServer: {},
         deleteAll: {},
@@ -216,4 +250,3 @@ struct SettingsView: View {
         voices: []
     )
 }
-

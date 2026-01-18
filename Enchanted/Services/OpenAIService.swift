@@ -20,16 +20,24 @@ class OpenAIService: @unchecked Sendable {
     }
     
     private func setupOpenAI() {
-        // Default to Ollama endpoint
+        // Use default values for now
         let localStorageUrl = UserDefaults.standard.string(forKey: "openAIUri")
         let localStorageKey = UserDefaults.standard.string(forKey: "openAIKey")
         
+        // Default to Ollama endpoint
+        let defaultUrl = "http://localhost:11434/v1"
+        let defaultKey = "not-needed"
+        
         if let url = localStorageUrl, !url.isEmpty {
             baseURL = url
+        } else {
+            baseURL = defaultUrl
         }
         
         if let key = localStorageKey, !key.isEmpty {
             apiKey = key
+        } else {
+            apiKey = defaultKey
         }
         
         // Initialize OpenAI client
@@ -42,12 +50,18 @@ class OpenAIService: @unchecked Sendable {
     }
     
     func updateEndpoint(url: String, key: String? = nil) {
+        // Update settings in UserDefaults directly
+        UserDefaults.standard.set(url, forKey: "openAIUri")
+        if let key = key {
+            UserDefaults.standard.set(key, forKey: "openAIKey")
+        }
+        
+        // Reinitialize OpenAI client
         baseURL = url
         if let key = key {
             apiKey = key
         }
         
-        // Reinitialize OpenAI client
         openAI = OpenAI(
             configuration: OpenAIConfiguration(
                 apiKey: apiKey,
