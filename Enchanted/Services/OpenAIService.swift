@@ -89,6 +89,32 @@ struct OpenAIChatRequest: Codable {
     var presence_penalty: Double?
     var tools: [ToolDefinition]?
     var tool_choice: String?
+    var response_format: OpenAIResponseFormat?
+}
+
+/// Response format for structured output (JSON mode or JSON Schema).
+struct OpenAIResponseFormat: Codable {
+    let type: String
+
+    /// For type "json_schema", the schema definition.
+    var json_schema: OpenAIJSONSchema?
+
+    /// JSON mode — model outputs valid JSON.
+    static let json = OpenAIResponseFormat(type: "json_object")
+
+    /// Structured output with a specific JSON Schema.
+    static func jsonSchema(name: String, schema: [String: AnyCodableValue], strict: Bool = true) -> OpenAIResponseFormat {
+        OpenAIResponseFormat(
+            type: "json_schema",
+            json_schema: OpenAIJSONSchema(name: name, strict: strict, schema: schema)
+        )
+    }
+}
+
+struct OpenAIJSONSchema: Codable {
+    let name: String
+    let strict: Bool
+    let schema: [String: AnyCodableValue]
 }
 
 struct OpenAIModelResponse: Codable {

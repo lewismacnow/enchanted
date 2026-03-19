@@ -65,6 +65,11 @@ Re-Enchanted is a macOS/iOS/visionOS LLM chat client forked from [Enchanted](htt
 - **Tool Calling**: OpenAI function calling with tools/tool_choice in requests
 - **Conversation Pinning**: pin/unpin conversations to sidebar top
 - **Conversation Search**: real-time search by name and message content
+- **Conversation Rename**: rename conversations via context menu
+- **System Prompt Persistence**: system messages are now properly saved to SwiftData
+- **Structured Outputs**: OpenAI JSON mode and JSON Schema `response_format` support
+- **Word Count**: assistant messages show word count on hover (macOS)
+- **Error Display**: improved error banner with icon and styling
 
 ## Dependencies
 

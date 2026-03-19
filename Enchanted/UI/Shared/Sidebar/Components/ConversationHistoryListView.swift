@@ -27,6 +27,7 @@ struct ConversationHistoryList: View {
     var onDelete: (_ conversation: ConversationSD) -> ()
     var onDeleteDailyConversations: (_ date: Date) -> ()
     var onTogglePin: ((_ conversation: ConversationSD) -> Void)?
+    var onRename: ((_ conversation: ConversationSD, _ newName: String) -> Void)?
 
     private var pinnedConversations: [ConversationSD] {
         conversations.filter { $0.isPinned }
@@ -49,6 +50,9 @@ struct ConversationHistoryList: View {
     var conversationGroups: [ConversationGroup] {
         groupConversationsByDay(conversations: unpinnedConversations)
     }
+
+    @State private var renamingConversation: ConversationSD?
+    @State private var renameText: String = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 17) {
@@ -96,6 +100,21 @@ struct ConversationHistoryList: View {
                 Divider()
             }
         }
+        .alert("Rename Conversation", isPresented: Binding(
+            get: { renamingConversation != nil },
+            set: { if !$0 { renamingConversation = nil } }
+        )) {
+            TextField("Name", text: $renameText)
+            Button("Cancel", role: .cancel) { renamingConversation = nil }
+            Button("Rename") {
+                if let conv = renamingConversation {
+                    onRename?(conv, renameText)
+                }
+                renamingConversation = nil
+            }
+        } message: {
+            Text("Enter a new name for this conversation.")
+        }
     }
 
     @ViewBuilder
@@ -138,6 +157,9 @@ struct ConversationHistoryList: View {
         .contextMenu {
             Button(action: { onTogglePin?(conversation) }) {
                 Label(conversation.isPinned ? "Unpin" : "Pin", systemImage: conversation.isPinned ? "pin.slash" : "pin")
+            }
+            Button(action: { renamingConversation = conversation; renameText = conversation.name }) {
+                Label("Rename", systemImage: "pencil")
             }
             Divider()
             Button(role: .destructive, action: { onDelete(conversation) }) {

@@ -76,6 +76,16 @@ final class ConversationStore: @unchecked Sendable {
         }
     }
 
+    @MainActor
+    func renameConversation(_ conversation: ConversationSD, newName: String) {
+        guard !newName.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+        conversation.name = newName
+        Task {
+            try? await swiftDataService.renameConversation(conversation)
+            try? await loadConversations()
+        }
+    }
+
     /// Search conversations by name or message content.
     func searchConversations(query: String) async -> [ConversationSD] {
         guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { return [] }
@@ -143,9 +153,11 @@ final class ConversationStore: @unchecked Sendable {
         }
 
         // Add system prompt to first message in conversation
+        var systemMessage: MessageSD?
         if !systemPrompt.isEmpty && conversation.messages.isEmpty {
-            let systemMessage = MessageSD(content: systemPrompt, role: "system")
-            systemMessage.conversation = conversation
+            let msg = MessageSD(content: systemPrompt, role: "system")
+            msg.conversation = conversation
+            systemMessage = msg
         }
 
         let userMessage = MessageSD(content: userPrompt, role: "user", image: image?.render()?.compressImageData())
@@ -161,6 +173,9 @@ final class ConversationStore: @unchecked Sendable {
         Task {
             do {
                 try await swiftDataService.updateConversation(conversation)
+                if let systemMessage {
+                    try await swiftDataService.createMessage(systemMessage)
+                }
                 try await swiftDataService.createMessage(userMessage)
                 try await swiftDataService.createMessage(assistantMessage)
                 try await reloadConversation(conversation)

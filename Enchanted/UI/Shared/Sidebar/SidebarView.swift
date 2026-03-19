@@ -15,6 +15,7 @@ struct SidebarView: View {
     var onConversationDelete: (_ conversation: ConversationSD) -> ()
     var onDeleteDailyConversations: (_ date: Date) -> ()
     var onTogglePin: ((_ conversation: ConversationSD) -> Void)?
+    var onRename: ((_ conversation: ConversationSD, _ newName: String) -> Void)?
     @State var showSettings = false
     @State var showCompletions = false
     @State var showKeyboardShortcutas = false
@@ -67,7 +68,8 @@ struct SidebarView: View {
                     onTap: onConversationTap,
                     onDelete: onConversationDelete,
                     onDeleteDailyConversations: onDeleteDailyConversations,
-                    onTogglePin: onTogglePin
+                    onTogglePin: onTogglePin,
+                    onRename: onRename
                 )
             }
             .scrollIndicators(.never)

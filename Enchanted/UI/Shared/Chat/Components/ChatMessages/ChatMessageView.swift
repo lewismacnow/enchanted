@@ -98,6 +98,15 @@ struct ChatMessageView: View {
             }
 #if os(macOS)
             HStack(spacing: 0) {
+                // Word count
+                if message.role != "user" && message.done {
+                    let wordCount = message.content.split(separator: " ").count
+                    Text("\(wordCount) words")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .padding(.trailing, 4)
+                }
+
                 /// Copy button
                 Button(action: {Clipboard.shared.setString(message.content)}) {
                     Image(systemName: "doc.on.doc")
@@ -105,7 +114,7 @@ struct ChatMessageView: View {
                 }
                 .buttonStyle(GrowingButton())
                 .clipShape(RoundedRectangle(cornerRadius: 10))
-                
+
                 /// Play button
                 Button(action: {
                     Task {
