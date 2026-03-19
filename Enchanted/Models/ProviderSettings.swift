@@ -14,9 +14,9 @@ public struct ProviderSettings: Codable {
     }
 
     public var provider: ProviderType = .ollama
-    public var ollamaUri: String = "http://localhost:11434"
+    public var ollamaUri: String = "http://192.168.1.100:11434"
     public var ollamaBearerToken: String = ""
-    public var openAIUri: String = ""
+    public var openAIUri: String = "http://192.168.1.100:1234/v1"
     public var openAIKey: String = ""
 
     public init() {}

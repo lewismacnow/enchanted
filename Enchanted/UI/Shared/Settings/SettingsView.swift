@@ -30,6 +30,11 @@ struct SettingsView: View {
     @State private var appStore = AppStore.shared
 
     @State private var deleteConversationsDialog = false
+    @State private var connectionTestResult: ConnectionTestResult = .none
+
+    enum ConnectionTestResult: Equatable {
+        case none, testing, success, failed(String)
+    }
 
     var body: some View {
         VStack {
@@ -77,7 +82,7 @@ struct SettingsView: View {
 
                 if appStore.providerSettings.provider == .ollama {
                     Section(header: Text("Ollama").font(.headline)) {
-                        TextField("Ollama server URI", text: $appStore.providerSettings.ollamaUri, onCommit: checkServer)
+                        TextField("Ollama server URI", text: $appStore.providerSettings.ollamaUri)
                             .textContentType(.URL)
                             .disableAutocorrection(true)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -93,12 +98,14 @@ struct SettingsView: View {
 #if os(iOS)
                             .autocapitalization(.none)
 #endif
+
+                        connectionButtons
                     }
                 }
 
                 if appStore.providerSettings.provider == .openai {
                     Section(header: Text("OpenAI Compatible").font(.headline)) {
-                        TextField("API Endpoint URL", text: $appStore.providerSettings.openAIUri, onCommit: checkServer)
+                        TextField("API Endpoint URL", text: $appStore.providerSettings.openAIUri)
                             .textContentType(.URL)
                             .disableAutocorrection(true)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -117,6 +124,8 @@ struct SettingsView: View {
                         Text("Works with any OpenAI-compatible endpoint: OpenAI, LM Studio, Ollama /v1, vLLM, etc.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
+
+                        connectionButtons
                     }
                 }
 
@@ -241,6 +250,122 @@ struct SettingsView: View {
             Button("Cancel", role: .cancel) { }
         } message: {
             Text("Delete All Conversations?")
+        }
+    }
+
+    // MARK: - Connection Test & Save Buttons
+
+    @ViewBuilder
+    private var connectionButtons: some View {
+        HStack(spacing: 12) {
+            Button(action: testConnection) {
+                HStack(spacing: 6) {
+                    if connectionTestResult == .testing {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else {
+                        Image(systemName: "antenna.radiowaves.left.and.right")
+                    }
+                    Text("Test Connection")
+                }
+            }
+            .buttonStyle(.bordered)
+            .disabled(connectionTestResult == .testing)
+
+            Button(action: testAndSave) {
+                HStack(spacing: 6) {
+                    Image(systemName: "checkmark.circle")
+                    Text("Test & Save")
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(connectionTestResult == .testing)
+        }
+        .padding(.vertical, 4)
+
+        // Status indicator
+        switch connectionTestResult {
+        case .none:
+            EmptyView()
+        case .testing:
+            HStack(spacing: 6) {
+                ProgressView()
+                    .controlSize(.small)
+                Text("Testing connection...")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        case .success:
+            HStack(spacing: 6) {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+                Text("Connected successfully")
+                    .font(.caption)
+                    .foregroundStyle(.green)
+            }
+        case .failed(let message):
+            HStack(spacing: 6) {
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundStyle(.red)
+                Text(message)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .lineLimit(2)
+            }
+        }
+    }
+
+    private func testConnection() {
+        connectionTestResult = .testing
+        let provider = appStore.providerSettings.provider
+
+        Task {
+            let reachable: Bool
+            if provider == .openai {
+                // Temporarily apply endpoint for testing
+                OpenAIService.shared.updateEndpoint(
+                    url: appStore.providerSettings.openAIUri,
+                    key: appStore.providerSettings.openAIKey
+                )
+                reachable = await OpenAIService.shared.reachable()
+            } else {
+                reachable = await OllamaService.shared.reachable()
+            }
+
+            await MainActor.run {
+                withAnimation {
+                    connectionTestResult = reachable ? .success : .failed("Could not reach server. Check the URL and try again.")
+                }
+            }
+        }
+    }
+
+    private func testAndSave() {
+        connectionTestResult = .testing
+        let provider = appStore.providerSettings.provider
+
+        Task {
+            let reachable: Bool
+            if provider == .openai {
+                OpenAIService.shared.updateEndpoint(
+                    url: appStore.providerSettings.openAIUri,
+                    key: appStore.providerSettings.openAIKey
+                )
+                reachable = await OpenAIService.shared.reachable()
+            } else {
+                reachable = await OllamaService.shared.reachable()
+            }
+
+            await MainActor.run {
+                withAnimation {
+                    if reachable {
+                        connectionTestResult = .success
+                        save()
+                    } else {
+                        connectionTestResult = .failed("Connection failed — settings not saved. Check the URL and try again.")
+                    }
+                }
+            }
         }
     }
 }

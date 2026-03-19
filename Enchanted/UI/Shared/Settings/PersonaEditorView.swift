@@ -15,15 +15,18 @@ struct PersonaEditorView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Text("Personas")
-                    .font(.headline)
-                Spacer()
-                Button(action: { showCreateSheet = true }) {
-                    Label("New Persona", systemImage: "plus")
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(alignment: .center) {
+                    Text("Personas")
+                        .font(.headline)
+                    Spacer()
+                    Button(action: { showCreateSheet = true }) {
+                        Label("New Persona", systemImage: "plus")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
+                    .fixedSize()
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.small)
             }
             .padding(.horizontal)
             .padding(.top, 12)
