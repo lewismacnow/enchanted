@@ -2,7 +2,7 @@
 //  ChatView_watchOS.swift
 //  Re-Enchanted
 //
-//  watchOS root chat view with tab-based navigation.
+//  watchOS root chat view — single NavigationStack with path-based navigation.
 //
 
 #if os(watchOS)
@@ -22,32 +22,40 @@ struct ChatView_watchOS: View {
     var onStopGenerateTap: () -> ()
     var onConversationDelete: (_ conversation: ConversationSD) -> ()
 
-    @State private var selectedTab = 0
+    @State private var navigationPath = NavigationPath()
+    @State private var showSettings = false
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            // Tab 0: Conversations with own NavigationStack
+        NavigationStack(path: $navigationPath) {
             WatchConversationListView(
                 conversations: conversations,
-                selectedConversation: selectedConversation,
-                messages: messages,
-                modelsList: modelsList,
-                selectedModel: selectedModel,
-                conversationState: conversationState,
-                onSelectModel: onSelectModel,
-                onConversationTap: onConversationTap,
+                onConversationTap: { conversation in
+                    onConversationTap(conversation)
+                    navigationPath.append(conversation.id)
+                },
                 onNewConversationTap: onNewConversationTap,
-                onSendMessageTap: onSendMessageTap,
-                onStopGenerateTap: onStopGenerateTap,
-                onConversationDelete: onConversationDelete
+                onConversationDelete: onConversationDelete,
+                onShowSettings: { showSettings = true }
             )
-            .tag(0)
-
-            // Tab 1: Settings — NO NavigationStack here (uses List directly)
-            WatchSettingsView()
-                .tag(1)
+            .navigationDestination(for: UUID.self) { conversationId in
+                if let conversation = conversations.first(where: { $0.id == conversationId }) {
+                    WatchChatDetailView(
+                        conversation: conversation,
+                        messages: messages,
+                        modelsList: modelsList,
+                        selectedModel: selectedModel,
+                        conversationState: conversationState,
+                        onSelectModel: onSelectModel,
+                        onConversationTap: onConversationTap,
+                        onSendMessageTap: onSendMessageTap,
+                        onStopGenerateTap: onStopGenerateTap
+                    )
+                }
+            }
+            .sheet(isPresented: $showSettings) {
+                WatchSettingsView()
+            }
         }
-        .tabViewStyle(.verticalPage)
     }
 }
 
