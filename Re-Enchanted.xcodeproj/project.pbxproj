@@ -16,6 +16,12 @@
 		02B10001300000000000B001 /* PersonaSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B10002300000000000B002 /* PersonaSD.swift */; };
 		02B10003300000000000B003 /* PersonaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B10004300000000000B004 /* PersonaStore.swift */; };
 		02B10005300000000000B005 /* PersonaEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B10006300000000000B006 /* PersonaEditorView.swift */; };
+		02C10001300000000000C001 /* ToolTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C10002300000000000C002 /* ToolTypes.swift */; };
+		02C10003300000000000C003 /* MCPTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C10004300000000000C004 /* MCPTypes.swift */; };
+		02C10005300000000000C005 /* MCPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C10006300000000000C006 /* MCPClient.swift */; };
+		02C10007300000000000C007 /* MCPStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C10008300000000000C008 /* MCPStore.swift */; };
+		02C10009300000000000C009 /* MCPSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C1000A300000000000C00A /* MCPSettingsView.swift */; };
+		02C1000B300000000000C00B /* ToolCallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C1000C300000000000C00C /* ToolCallView.swift */; };
 		3396E0762BD877D500213816 /* Menus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3396E0752BD877D500213816 /* Menus.swift */; };
 		FF0146CB2B3DA1DF00A2A9F6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0146CA2B3DA1DF00A2A9F6 /* Settings.swift */; };
 		FF0146CD2B3DADCA00A2A9F6 /* HapticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0146CC2B3DADCA00A2A9F6 /* HapticsService.swift */; };
@@ -124,6 +130,12 @@
 		02B10002300000000000B002 /* PersonaSD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonaSD.swift; sourceTree = "<group>"; };
 		02B10004300000000000B004 /* PersonaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonaStore.swift; sourceTree = "<group>"; };
 		02B10006300000000000B006 /* PersonaEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonaEditorView.swift; sourceTree = "<group>"; };
+		02C10002300000000000C002 /* ToolTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolTypes.swift; sourceTree = "<group>"; };
+		02C10004300000000000C004 /* MCPTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCPTypes.swift; sourceTree = "<group>"; };
+		02C10006300000000000C006 /* MCPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCPClient.swift; sourceTree = "<group>"; };
+		02C10008300000000000C008 /* MCPStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCPStore.swift; sourceTree = "<group>"; };
+		02C1000A300000000000C00A /* MCPSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCPSettingsView.swift; sourceTree = "<group>"; };
+		02C1000C300000000000C00C /* ToolCallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolCallView.swift; sourceTree = "<group>"; };
 		3396E0752BD877D500213816 /* Menus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menus.swift; sourceTree = "<group>"; };
 		FF0146CA2B3DA1DF00A2A9F6 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		FF0146CC2B3DADCA00A2A9F6 /* HapticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsService.swift; sourceTree = "<group>"; };
@@ -242,6 +254,7 @@
 				FF9300DB2B7823B0000859F4 /* EmptyConversaitonView.swift */,
 				FF1002532B261D460011A4DC /* MessageListVIew.swift */,
 				02A10002300000000000A002 /* ModelCapabilityBadges.swift */,
+				02C1000C300000000000C00C /* ToolCallView.swift */,
 				FF1002692B2731C60011A4DC /* ModelSelectorView.swift */,
 				FF9C920B2BF0C088004C8275 /* OptionsMenuView.swift */,
 				FFB56F422C0353CF0020AFFD /* ReadingAloudView.swift */,
@@ -270,6 +283,7 @@
 				FFFD00C12B92607800392AE6 /* CompletionsStore.swift */,
 				FF1002432B25BB730011A4DC /* ConversationStore.swift */,
 				FF1002452B25BCE70011A4DC /* LanguageModelStore.swift */,
+				02C10008300000000000C008 /* MCPStore.swift */,
 				02B10004300000000000B004 /* PersonaStore.swift */,
 			);
 			path = Stores;
@@ -311,6 +325,7 @@
 			isa = PBXGroup;
 			children = (
 				02A10006300000000000A006 /* ModelManagementView.swift */,
+				02C1000A300000000000C00A /* MCPSettingsView.swift */,
 				02B10006300000000000B006 /* PersonaEditorView.swift */,
 				FF10026C2B2751760011A4DC /* SettingsView.swift */,
 				FF0146CA2B3DA1DF00A2A9F6 /* Settings.swift */,
@@ -531,6 +546,8 @@
 			isa = PBXGroup;
 			children = (
 				01F47BFF2F1D8FDB00357239 /* ProviderSettings.swift */,
+				02C10002300000000000C002 /* ToolTypes.swift */,
+				02C10004300000000000C004 /* MCPTypes.swift */,
 				FF1002722B276EC10011A4DC /* AppColorScheme.swift */,
 				FF10025D2B2648460011A4DC /* ConversationState.swift */,
 				FF9C92092BF0B7B1004C8275 /* LanguageModel.swift */,
@@ -547,6 +564,7 @@
 				FF0146CC2B3DADCA00A2A9F6 /* HapticsService.swift */,
 				FF2F03482B796A6500349855 /* HotkeyService.swift */,
 				FF10023D2B24F4900011A4DC /* OllamaService.swift */,
+				02C10006300000000000C006 /* MCPClient.swift */,
 				01F47C012F1D900000357240 /* OpenAIService.swift */,
 				FF10024F2B25C79F0011A4DC /* SwiftDataService.swift */,
 				FF6B7B122B3EE7AC00E8FEA3 /* Throttler.swift */,
@@ -755,6 +773,12 @@
 				02B10001300000000000B001 /* PersonaSD.swift in Sources */,
 				02B10003300000000000B003 /* PersonaStore.swift in Sources */,
 				02B10005300000000000B005 /* PersonaEditorView.swift in Sources */,
+				02C10001300000000000C001 /* ToolTypes.swift in Sources */,
+				02C10003300000000000C003 /* MCPTypes.swift in Sources */,
+				02C10005300000000000C005 /* MCPClient.swift in Sources */,
+				02C10007300000000000C007 /* MCPStore.swift in Sources */,
+				02C10009300000000000C009 /* MCPSettingsView.swift in Sources */,
+				02C1000B300000000000C00B /* ToolCallView.swift in Sources */,
 				FFD57E322BF291B2003FEFF1 /* CodeBlockView.swift in Sources */,
 				FF1002542B261D460011A4DC /* MessageListVIew.swift in Sources */,
 				FF10024E2B25C2A70011A4DC /* ConversationSD.swift in Sources */,

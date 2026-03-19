@@ -129,6 +129,13 @@ struct SettingsView: View {
                         .frame(minHeight: 200)
                 }
 
+#if os(macOS)
+                Section(header: Text("MCP Servers").font(.headline)) {
+                    MCPSettingsView()
+                        .frame(minHeight: 150)
+                }
+#endif
+
                 Section(header: Text("Chat").font(.headline)) {
                     VStack(alignment: .leading) {
                         Text("System prompt")

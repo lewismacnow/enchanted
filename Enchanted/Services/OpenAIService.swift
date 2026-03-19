@@ -87,6 +87,8 @@ struct OpenAIChatRequest: Codable {
     var top_p: Double?
     var frequency_penalty: Double?
     var presence_penalty: Double?
+    var tools: [ToolDefinition]?
+    var tool_choice: String?
 }
 
 struct OpenAIModelResponse: Codable {
@@ -213,7 +215,9 @@ class OpenAIService: @unchecked Sendable {
     func streamChat(
         model: String,
         messages: [OpenAIChatMessage],
-        temperature: Double = 0.7
+        temperature: Double = 0.7,
+        tools: [ToolDefinition]? = nil,
+        toolChoice: String? = nil
     ) -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { continuation in
             Task {
@@ -230,12 +234,14 @@ class OpenAIService: @unchecked Sendable {
                         return
                     }
 
-                    let chatRequest = OpenAIChatRequest(
+                    var chatRequest = OpenAIChatRequest(
                         model: model,
                         messages: messages,
                         stream: true,
                         temperature: temperature
                     )
+                    chatRequest.tools = tools
+                    chatRequest.tool_choice = toolChoice
 
                     var request = URLRequest(url: url)
                     request.httpMethod = "POST"
