@@ -8,7 +8,7 @@
 import Foundation
 
 public struct ProviderSettings: Codable {
-    public enum ProviderType: String, CaseIterable, Codable {
+    public enum ProviderType: String, CaseIterable, Codable, Sendable {
         case ollama = "Ollama"
         case openai = "OpenAI"
     }

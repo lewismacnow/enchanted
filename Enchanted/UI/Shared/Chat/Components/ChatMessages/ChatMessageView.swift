@@ -181,15 +181,12 @@ struct ChatMessageView: View {
     }
 }
 
-#Preview {
+#Preview(traits: .sizeThatFitsLayout) {
     VStack {
         ChatMessageView(message: MessageSD.sample[0], userInitials: "AM", editMessage: .constant(nil))
-            .previewLayout(.sizeThatFits)
-        
+
         ChatMessageView(message: MessageSD.sample[1], userInitials: "AM", editMessage: .constant(nil))
-            .previewLayout(.sizeThatFits)
-        
+
         ChatMessageView(message: MessageSD(content: "```python \nprint(5+5)\n```", role: "ai"), showLoader: true, userInitials: "AM", editMessage: .constant(nil))
-            .previewLayout(.sizeThatFits)
     }
 }

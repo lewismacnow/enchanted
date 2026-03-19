@@ -18,7 +18,7 @@ final actor Printer {
     }
 }
 
-class PanelManager: NSObject, NSApplicationDelegate {
+class PanelManager: NSObject, NSApplicationDelegate, @unchecked Sendable {
     var targetApplication: NSRunningApplication?
     var lastPrintApplication: NSRunningApplication?
     var panel: FloatingPanel!

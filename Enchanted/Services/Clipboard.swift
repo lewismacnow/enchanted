@@ -37,8 +37,9 @@ final class Clipboard: Sendable {
         let type = NSPasteboard.PasteboardType.tiff
         guard let imgData = pb.data(forType: type) else { return nil }
         return NSImage(data: imgData)
-#endif
+#else
         return nil
+#endif
     }
     
     func getText() -> String? {

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 90;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -208,7 +208,6 @@
 /* Begin PBXFrameworksBuildPhase section */
 		FFEC328A2B24779A003E5C04 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				FFD5FAD52B8130CE0055AB51 /* OllamaKit in Frameworks */,
 				FFD5FAD22B8130490055AB51 /* Vortex in Frameworks */,
@@ -220,7 +219,6 @@
 				FFFD00C92B94CB5E00392AE6 /* AsyncAlgorithms in Frameworks */,
 				FF4A605D2BC3587800D7BD4F /* KeyboardShortcuts in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -586,8 +584,6 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			name = "Re-Enchanted";
 			packageProductDependencies = (
 				FF1002652B2653EE0011A4DC /* ActivityIndicatorView */,
@@ -620,7 +616,6 @@
 				};
 			};
 			buildConfigurationList = FFEC32882B24779A003E5C04 /* Build configuration list for PBXProject "Re-Enchanted" */;
-			compatibilityVersion = "Xcode 16.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -639,6 +634,7 @@
 				FF0611EF2C04A2FB00443B33 /* XCRemoteSwiftPackageReference "Splash" */,
 				FF79AEB42CE72ECE00EDE10C /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 			);
+			preferredProjectObjectVersion = 90;
 			productRefGroup = FFEC328E2B24779A003E5C04 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -651,20 +647,17 @@
 /* Begin PBXResourcesBuildPhase section */
 		FFEC328B2B24779A003E5C04 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				FFEC329B2B24779B003E5C04 /* Preview Assets.xcassets in Resources */,
 				FFE2C8232B9A657A00BD82F3 /* Accessibility.plist in Resources */,
 				FFEC32972B24779B003E5C04 /* Assets.xcassets in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		FFEC32892B24779A003E5C04 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				FF6D82252B9204F3001183A8 /* AsyncQueue.swift in Sources */,
 				FF1002442B25BB730011A4DC /* ConversationStore.swift in Sources */,
@@ -754,12 +747,11 @@
 				FFEC9BE72B813A8D00AFBA63 /* RemovableImage.swift in Sources */,
 				FFFD00C22B92607800392AE6 /* CompletionsStore.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		FFEC329C2B24779B003E5C04 /* Debug */ = {
+		FFEC329C2B24779B003E5C04 /* Debug configuration for PBXProject "Re-Enchanted" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -821,7 +813,7 @@
 			};
 			name = Debug;
 		};
-		FFEC329D2B24779B003E5C04 /* Release */ = {
+		FFEC329D2B24779B003E5C04 /* Release configuration for PBXProject "Re-Enchanted" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -875,7 +867,7 @@
 			};
 			name = Release;
 		};
-		FFEC329F2B24779B003E5C04 /* Debug */ = {
+		FFEC329F2B24779B003E5C04 /* Debug configuration for PBXNativeTarget "Re-Enchanted" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -883,12 +875,11 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Enchanted/EnchantedDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Enchanted/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 9YFW636V87;
 				ENABLE_HARDENED_RUNTIME = YES;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				ENABLE_PREVIEWS = YES;
@@ -921,14 +912,14 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_STRICT_CONCURRENCY = targeted;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				XROS_DEPLOYMENT_TARGET = 1.1;
 			};
 			name = Debug;
 		};
-		FFEC32A02B24779B003E5C04 /* Release */ = {
+		FFEC32A02B24779B003E5C04 /* Release configuration for PBXNativeTarget "Re-Enchanted" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -936,12 +927,11 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Enchanted/Enchanted.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Enchanted/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 9YFW636V87;
 				ENABLE_HARDENED_RUNTIME = YES;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				ENABLE_PREVIEWS = YES;
@@ -974,7 +964,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_STRICT_CONCURRENCY = targeted;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				XROS_DEPLOYMENT_TARGET = 1.1;
@@ -984,22 +974,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		FFEC32882B24779A003E5C04 /* Build configuration list for PBXProject "Enchanted" */ = {
+		FFEC32882B24779A003E5C04 /* Build configuration list for PBXProject "Re-Enchanted" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				FFEC329C2B24779B003E5C04 /* Debug */,
-				FFEC329D2B24779B003E5C04 /* Release */,
+				FFEC329C2B24779B003E5C04 /* Debug configuration for PBXProject "Re-Enchanted" */,
+				FFEC329D2B24779B003E5C04 /* Release configuration for PBXProject "Re-Enchanted" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		FFEC329E2B24779B003E5C04 /* Build configuration list for PBXNativeTarget "Re-Enchanted" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				FFEC329F2B24779B003E5C04 /* Debug */,
-				FFEC32A02B24779B003E5C04 /* Release */,
+				FFEC329F2B24779B003E5C04 /* Debug configuration for PBXNativeTarget "Re-Enchanted" */,
+				FFEC32A02B24779B003E5C04 /* Release configuration for PBXNativeTarget "Re-Enchanted" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */

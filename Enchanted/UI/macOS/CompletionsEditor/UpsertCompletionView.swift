@@ -81,7 +81,7 @@ struct UpsertCompletionView: View {
                 
                 VStack(alignment: .trailing) {
                     TextField("Keyboard Shortcut Letter", text: $keyboardShortcutKey)
-                        .onChange(of: keyboardShortcutKey) { newValue in
+                        .onChange(of: keyboardShortcutKey) { _, newValue in
                             if newValue.count > 1 {
                                 keyboardShortcutKey = String(newValue.prefix(1))
                             }

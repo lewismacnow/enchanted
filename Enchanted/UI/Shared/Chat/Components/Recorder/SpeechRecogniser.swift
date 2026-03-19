@@ -32,7 +32,7 @@ actor SpeechRecognizer: ObservableObject {
     private var request: SFSpeechAudioBufferRecognitionRequest?
     private var task: SFSpeechRecognitionTask?
     var recognizer: SFSpeechRecognizer?
-    private var onUpdate: ((String) -> ())?
+    nonisolated(unsafe) private var onUpdate: ((String) -> ())?
     
     /**
      Initializes a new speech recognizer. If this is the first time you've used the class, it
@@ -176,10 +176,10 @@ actor SpeechRecognizer: ObservableObject {
     
     
     nonisolated private func transcribe(_ message: String) {
-        Task { @MainActor in
-            transcript = message
+        Task { @MainActor [weak self] in
+            self?.transcript = message
             if !message.isEmpty {
-                await onUpdate?(message)
+                self?.onUpdate?(message)
             }
         }
     }

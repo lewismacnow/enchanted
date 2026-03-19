@@ -27,7 +27,7 @@ struct Chat: View, Sendable {
             showMenu.toggle()
         }
         Task {
-            await Haptics.shared.mediumTap()
+            Haptics.shared.mediumTap()
         }
     }
     
@@ -56,7 +56,7 @@ struct Chat: View, Sendable {
     func onConversationTap(_ conversation: ConversationSD) {
         Task {
             try await conversationStore.selectConversation(conversation)
-            await languageModelStore.setModel(model: conversation.model)
+            languageModelStore.setModel(model: conversation.model)
             Haptics.shared.mediumTap()
         }
         withAnimation {
@@ -71,7 +71,7 @@ struct Chat: View, Sendable {
     
     func onConversationDelete(_ conversation: ConversationSD) {
         Task {
-            await Haptics.shared.mediumTap()
+            Haptics.shared.mediumTap()
             try? await conversationStore.delete(conversation)
         }
     }
@@ -84,7 +84,7 @@ struct Chat: View, Sendable {
         }
         
         Task {
-            await Haptics.shared.mediumTap()
+            Haptics.shared.mediumTap()
             try? await languageModelStore.loadModels()
         }
         
@@ -95,7 +95,7 @@ struct Chat: View, Sendable {
     
     func copyChat(_ json: Bool) {
         Task {
-            let messages = await ConversationStore.shared.messages
+            let messages = ConversationStore.shared.messages
             
             if messages.count == 0 {
                 return

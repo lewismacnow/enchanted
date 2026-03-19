@@ -36,7 +36,7 @@ struct MarkdownColours {
     static let checkbox = Color(rgba: 0xb9b9_bbff)
     static let checkboxBackground = Color(rgba: 0xeeee_efff)
     
-    nonisolated(unsafe) static let enchantedTheme = Theme()
+    @MainActor static let enchantedTheme = Theme()
         .text {
             FontSize(14)
         }

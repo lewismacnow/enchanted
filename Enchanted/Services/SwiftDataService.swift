@@ -43,7 +43,7 @@ final actor SwiftDataService: ModelActor {
 // MARK: - Language Models
 extension SwiftDataService {
     func fetchModels() throws -> [LanguageModelSD] {
-        nonisolated(unsafe) let sortDescriptor = SortDescriptor(\LanguageModelSD.name)
+        let sortDescriptor = SortDescriptor(\LanguageModelSD.name)
         let fetchDescriptor = FetchDescriptor<LanguageModelSD>(sortBy: [sortDescriptor])
         return try modelContext.fetch(fetchDescriptor)
     }
@@ -83,13 +83,13 @@ extension SwiftDataService {
     }
 
     func fetchConversations() throws -> [ConversationSD] {
-        nonisolated(unsafe) let sortDescriptor = SortDescriptor(\ConversationSD.updatedAt, order: .reverse)
+        let sortDescriptor = SortDescriptor(\ConversationSD.updatedAt, order: .reverse)
         let fetchDescriptor = FetchDescriptor<ConversationSD>(sortBy: [sortDescriptor])
         return try modelContext.fetch(fetchDescriptor)
     }
 
     func getConversation(_ conversationId: UUID) throws -> ConversationSD? {
-        nonisolated(unsafe) let predicate = #Predicate<ConversationSD> { $0.id == conversationId }
+        let predicate = #Predicate<ConversationSD> { $0.id == conversationId }
         let fetchDescriptor = FetchDescriptor<ConversationSD>(predicate: predicate)
         let conversations = try modelContext.fetch(fetchDescriptor)
         return conversations.first
@@ -106,7 +106,7 @@ extension SwiftDataService {
     }
 
     func deleteConversations(_ date: Date) throws {
-        nonisolated(unsafe) let predicate = #Predicate<ConversationSD> { $0.createdAt >= date && $0.createdAt <= date }
+        let predicate = #Predicate<ConversationSD> { $0.createdAt >= date && $0.createdAt <= date }
         try modelContext.delete(model: ConversationSD.self, where: predicate)
     }
 }
@@ -114,8 +114,8 @@ extension SwiftDataService {
 // MARK: - Messages
 extension SwiftDataService {
     func fetchMessages(_ conversationId: UUID) throws -> [MessageSD] {
-        nonisolated(unsafe) let predicate = #Predicate<MessageSD> { $0.conversation?.id == conversationId }
-        nonisolated(unsafe) let sortDescriptor = SortDescriptor(\MessageSD.createdAt)
+        let predicate = #Predicate<MessageSD> { $0.conversation?.id == conversationId }
+        let sortDescriptor = SortDescriptor(\MessageSD.createdAt)
         let fetchDescriptor = FetchDescriptor<MessageSD>(predicate: predicate, sortBy: [sortDescriptor])
         return try modelContext.fetch(fetchDescriptor)
     }
@@ -133,7 +133,7 @@ extension SwiftDataService {
 // MARK: - CompletionInstruction
 extension SwiftDataService {
     func fetchCompletionInstructions() throws -> [CompletionInstructionSD] {
-        nonisolated(unsafe) let sortDescriptor = SortDescriptor(\CompletionInstructionSD.order, order: .forward)
+        let sortDescriptor = SortDescriptor(\CompletionInstructionSD.order, order: .forward)
         let fetchDescriptor = FetchDescriptor<CompletionInstructionSD>(sortBy: [sortDescriptor])
         return try modelContext.fetch(fetchDescriptor)
     }

@@ -10,7 +10,7 @@ import SwiftUI
 
 @Observable
 final class CompletionsStore: @unchecked Sendable {
-    nonisolated(unsafe) static let shared = CompletionsStore(swiftDataService: SwiftDataService.shared)
+    static let shared = CompletionsStore(swiftDataService: SwiftDataService.shared)
     private var swiftDataService: SwiftDataService
     
     var completions: [CompletionInstructionSD] = []

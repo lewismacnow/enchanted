@@ -67,8 +67,8 @@ struct Settings: View {
     }
 
     private func deleteAll() {
+        conversationStore.deleteAllConversations()
         Task {
-            try? await conversationStore.deleteAllConversations()
             try? await languageModelStore.deleteAllModels()
         }
     }

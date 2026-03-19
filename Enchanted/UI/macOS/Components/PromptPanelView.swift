@@ -159,7 +159,9 @@ struct PromptPanelView: View {
             _ = provider.loadDataRepresentation(for: .image) { data, error in
                 if error == nil, let data {
                     if let nsImage = NSImage(data: data) {
-                        updateSelectedImage(Image(nsImage: nsImage))
+                        DispatchQueue.main.async {
+                            self.updateSelectedImage(Image(nsImage: nsImage))
+                        }
                     }
                 }
             }

@@ -33,16 +33,18 @@ struct ApplicationEntry: View {
             }
             
             Task.detached {
-                async let loadModels: () = languageModelStore.loadModels()
-                async let loadConversations: () = conversationStore.loadConversations()
-                async let loadCompletions: () = completionsStore.load()
-                
                 do {
-                    _ = try await loadModels
-                    _ = try await loadConversations
-                    _ = try await loadCompletions
+                    try await languageModelStore.loadModels()
                 } catch {
-                    print("Unexpected error: \(error).")
+                    print("Failed to load models: \(error)")
+                }
+                do {
+                    try await conversationStore.loadConversations()
+                } catch {
+                    print("Failed to load conversations: \(error)")
+                }
+                await MainActor.run {
+                    completionsStore.load()
                 }
             }
         }

@@ -33,7 +33,7 @@ final class ConversationStore: @unchecked Sendable {
     }
 
     func loadConversations() async throws {
-        let fetchedConversations = try await swiftDataService.fetchConversations()
+        nonisolated(unsafe) let fetchedConversations = try await swiftDataService.fetchConversations()
         await MainActor.run {
             self.conversations = fetchedConversations
         }
@@ -67,14 +67,14 @@ final class ConversationStore: @unchecked Sendable {
     }
 
     func reloadConversation(_ conversation: ConversationSD) async throws {
-        let (messages, selectedConversation) = try await (
+        nonisolated(unsafe) let (fetchedMessages, fetchedConversation) = try await (
             swiftDataService.fetchMessages(conversation.id),
             swiftDataService.getConversation(conversation.id)
         )
 
         await MainActor.run {
-            self.messages = messages
-            self.selectedConversation = selectedConversation
+            self.messages = fetchedMessages
+            self.selectedConversation = fetchedConversation
         }
     }
 
@@ -84,7 +84,7 @@ final class ConversationStore: @unchecked Sendable {
 
     func delete(_ conversation: ConversationSD) async throws {
         try await swiftDataService.deleteConversation(conversation)
-        let fetchedConversations = try await swiftDataService.fetchConversations()
+        nonisolated(unsafe) let fetchedConversations = try await swiftDataService.fetchConversations()
         await MainActor.run {
             self.selectedConversation = nil
             self.conversations = fetchedConversations
@@ -255,16 +255,16 @@ final class ConversationStore: @unchecked Sendable {
             temperature: 0.7
         )
 
-        openAITask = Task { [weak self] in
+        openAITask = Task { @MainActor [weak self] in
             do {
                 for try await content in stream {
                     guard !Task.isCancelled else { break }
-                    await self?.handleOpenAIReceive(content)
+                    self?.handleOpenAIReceive(content)
                 }
-                await self?.handleComplete()
+                self?.handleComplete()
             } catch {
                 if !Task.isCancelled {
-                    await self?.handleError(error.localizedDescription)
+                    self?.handleError(error.localizedDescription)
                 }
             }
         }

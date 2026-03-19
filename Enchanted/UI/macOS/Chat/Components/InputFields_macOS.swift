@@ -150,7 +150,9 @@ struct InputFieldsView: View {
             guard let provider = providers.first else { return false }
             _ = provider.loadDataRepresentation(for: .image) { data, error in
                 if error == nil, let data {
-                    selectedImage = Image(data: data)
+                    DispatchQueue.main.async {
+                        selectedImage = Image(data: data)
+                    }
                 }
             }
             
@@ -165,7 +167,7 @@ struct InputFieldsView: View {
 }
 
 #Preview {
-    @State var message = ""
+    @Previewable @State var message = ""
     return InputFieldsView(
         message: $message,
         conversationState: .completed,

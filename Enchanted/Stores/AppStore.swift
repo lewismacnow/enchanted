@@ -17,7 +17,7 @@ enum AppState {
 
 @Observable
 final class AppStore: @unchecked Sendable {
-    nonisolated(unsafe) static let shared = AppStore()
+    static let shared = AppStore()
 
     private var cancellables = Set<AnyCancellable>()
     private var timer: Timer?

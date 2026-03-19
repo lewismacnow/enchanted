@@ -65,19 +65,17 @@ struct ConversationHistoryList: View {
                         HStack {
                             Circle()
                                 .frame(width: 6, height: 6)
-                                .animation(.easeOut(duration: 0.15))
                                 .transition(.opacity)
                                 .showIf(selectedConversation == dailyConversation)
-                            
+
                             Text(dailyConversation.name)
                                 .lineLimit(1)
                                 .font(.system(size: 16))
                                 .foregroundColor(Color(.label))
-                                .animation(.easeOut(duration: 0.15))
                                 .transition(.opacity)
                             Spacer()
                         }
-                        .animation(.easeOut(duration: 0.15))
+                        .animation(.easeOut(duration: 0.15), value: selectedConversation)
                     }
                     .buttonStyle(.plain)
                     .contextMenu(menuItems: {

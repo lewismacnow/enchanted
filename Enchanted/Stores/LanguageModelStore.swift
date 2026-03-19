@@ -11,7 +11,7 @@ import SwiftData
 
 @Observable
 final class LanguageModelStore: @unchecked Sendable {
-    nonisolated(unsafe) static let shared = LanguageModelStore(swiftDataService: SwiftDataService.shared)
+    static let shared = LanguageModelStore(swiftDataService: SwiftDataService.shared)
 
     private var swiftDataService: SwiftDataService
     @MainActor var models: [LanguageModelSD] = []
@@ -82,11 +82,12 @@ final class LanguageModelStore: @unchecked Sendable {
         try await swiftDataService.saveModels(models: allModels)
 
         // Fetch stored models
-        let storedModels = (try? await swiftDataService.fetchModels()) ?? []
+        nonisolated(unsafe) let storedModels = (try? await swiftDataService.fetchModels()) ?? []
+        let modelNames = allModels.map { $0.name }
+        nonisolated(unsafe) let filteredModels = storedModels.filter { modelNames.contains($0.name) }
 
-        DispatchQueue.main.async {
-            let allModelNames = allModels.map { $0.name }
-            self.models = storedModels.filter { allModelNames.contains($0.name) }
+        await MainActor.run {
+            self.models = filteredModels
 
             // Set first model as selected if none selected
             if self.selectedModel == nil && !self.models.isEmpty {
