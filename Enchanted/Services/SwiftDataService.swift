@@ -22,7 +22,8 @@ final actor SwiftDataService: ModelActor {
                 LanguageModelSD.self,
                 ConversationSD.self,
                 MessageSD.self,
-                CompletionInstructionSD.self
+                CompletionInstructionSD.self,
+                PersonaSD.self
             ])
             let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -156,6 +157,28 @@ extension SwiftDataService {
     }
 }
 
+// MARK: - Personas
+extension SwiftDataService {
+    func fetchPersonas() throws -> [PersonaSD] {
+        let fetchDescriptor = FetchDescriptor<PersonaSD>(sortBy: [])
+        return try modelContext.fetch(fetchDescriptor)
+    }
+
+    func createPersona(_ persona: PersonaSD) throws {
+        modelContext.insert(persona)
+        try modelContext.saveChanges()
+    }
+
+    func updatePersona(_ persona: PersonaSD) throws {
+        try modelContext.saveChanges()
+    }
+
+    func deletePersona(_ persona: PersonaSD) throws {
+        modelContext.delete(persona)
+        try modelContext.saveChanges()
+    }
+}
+
 // MARK: - General
 extension SwiftDataService {
     func deleteEverything() throws {
@@ -163,6 +186,7 @@ extension SwiftDataService {
         try modelContext.delete(model: LanguageModelSD.self)
         try modelContext.delete(model: MessageSD.self)
         try modelContext.delete(model: CompletionInstructionSD.self)
+        try modelContext.delete(model: PersonaSD.self)
         try modelContext.saveChanges()
     }
 }

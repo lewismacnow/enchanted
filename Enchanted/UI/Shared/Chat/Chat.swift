@@ -11,11 +11,12 @@ struct Chat: View, Sendable {
     @State private var languageModelStore: LanguageModelStore
     @State private var conversationStore: ConversationStore
     @State private var appStore: AppStore
+    @State private var personaStore = PersonaStore.shared
     @AppStorage("systemPrompt") private var systemPrompt: String = ""
     @AppStorage("appUserInitials") private var userInitials: String = ""
     @AppStorage("defaultOllamaModel") private var defaultOllamaModel: String = ""
     @State var showMenu = false
-    
+
     init(languageModelStore: LanguageModelStore, conversationStore: ConversationStore, appStore: AppStore) {
         _languageModelStore = State(initialValue: languageModelStore)
         _conversationStore = State(initialValue: conversationStore)
@@ -43,12 +44,24 @@ struct Chat: View, Sendable {
     }
     
     @MainActor
+    func selectPersona(_ persona: PersonaSD) {
+        personaStore.selectPersona(persona)
+        if let baseModel = persona.baseModel {
+            languageModelStore.setModel(model: baseModel)
+        }
+    }
+
+    @MainActor
     func sendMessage(prompt: String, model: LanguageModelSD, image: Image?, trimmingMessageId: String?) {
+        // Use persona system prompt if active, otherwise global system prompt
+        let activePrompt = personaStore.activePersona?.systemPrompt ?? systemPrompt
+        let activeModel = personaStore.activePersona?.baseModel ?? model
+
         conversationStore.sendPrompt(
             userPrompt: prompt,
-            model: model,
+            model: activeModel,
             image: image,
-            systemPrompt: systemPrompt,
+            systemPrompt: activePrompt,
             trimmingMessageId: trimmingMessageId
         )
     }
@@ -130,16 +143,19 @@ struct Chat: View, Sendable {
                 conversations: conversationStore.conversations,
                 messages: conversationStore.messages,
                 modelsList: languageModelStore.visibleModels,
+                personas: personaStore.visiblePersonas,
+                activePersona: personaStore.activePersona,
                 onMenuTap: toggleMenu,
                 onNewConversationTap: newConversation,
                 onSendMessageTap: sendMessage,
-                onConversationTap:onConversationTap,
+                onConversationTap: onConversationTap,
                 conversationState: conversationStore.conversationState,
                 onStopGenerateTap: onStopGenerateTap,
                 reachable: appStore.isReachable,
                 modelSupportsImages: languageModelStore.supportsImages,
                 selectedModel: languageModelStore.selectedModel,
                 onSelectModel: languageModelStore.setModel,
+                onSelectPersona: selectPersona,
                 onConversationDelete: onConversationDelete,
                 onDeleteDailyConversations: conversationStore.deleteDailyConversations,
                 userInitials: userInitials,

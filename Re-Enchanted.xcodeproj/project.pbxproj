@@ -13,6 +13,9 @@
 		02A10001300000000000A001 /* ModelCapabilityBadges.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A10002300000000000A002 /* ModelCapabilityBadges.swift */; };
 		02A10003300000000000A003 /* ThinkingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A10004300000000000A004 /* ThinkingView.swift */; };
 		02A10005300000000000A005 /* ModelManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A10006300000000000A006 /* ModelManagementView.swift */; };
+		02B10001300000000000B001 /* PersonaSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B10002300000000000B002 /* PersonaSD.swift */; };
+		02B10003300000000000B003 /* PersonaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B10004300000000000B004 /* PersonaStore.swift */; };
+		02B10005300000000000B005 /* PersonaEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B10006300000000000B006 /* PersonaEditorView.swift */; };
 		3396E0762BD877D500213816 /* Menus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3396E0752BD877D500213816 /* Menus.swift */; };
 		FF0146CB2B3DA1DF00A2A9F6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0146CA2B3DA1DF00A2A9F6 /* Settings.swift */; };
 		FF0146CD2B3DADCA00A2A9F6 /* HapticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0146CC2B3DADCA00A2A9F6 /* HapticsService.swift */; };
@@ -118,6 +121,9 @@
 		02A10002300000000000A002 /* ModelCapabilityBadges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCapabilityBadges.swift; sourceTree = "<group>"; };
 		02A10004300000000000A004 /* ThinkingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThinkingView.swift; sourceTree = "<group>"; };
 		02A10006300000000000A006 /* ModelManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManagementView.swift; sourceTree = "<group>"; };
+		02B10002300000000000B002 /* PersonaSD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonaSD.swift; sourceTree = "<group>"; };
+		02B10004300000000000B004 /* PersonaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonaStore.swift; sourceTree = "<group>"; };
+		02B10006300000000000B006 /* PersonaEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonaEditorView.swift; sourceTree = "<group>"; };
 		3396E0752BD877D500213816 /* Menus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menus.swift; sourceTree = "<group>"; };
 		FF0146CA2B3DA1DF00A2A9F6 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		FF0146CC2B3DADCA00A2A9F6 /* HapticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsService.swift; sourceTree = "<group>"; };
@@ -264,6 +270,7 @@
 				FFFD00C12B92607800392AE6 /* CompletionsStore.swift */,
 				FF1002432B25BB730011A4DC /* ConversationStore.swift */,
 				FF1002452B25BCE70011A4DC /* LanguageModelStore.swift */,
+				02B10004300000000000B004 /* PersonaStore.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -275,6 +282,7 @@
 				FF10024D2B25C2A70011A4DC /* ConversationSD.swift */,
 				FF1002492B25BE740011A4DC /* LanguageModelSD.swift */,
 				FF10024B2B25BEA00011A4DC /* MessageSD.swift */,
+				02B10002300000000000B002 /* PersonaSD.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -303,6 +311,7 @@
 			isa = PBXGroup;
 			children = (
 				02A10006300000000000A006 /* ModelManagementView.swift */,
+				02B10006300000000000B006 /* PersonaEditorView.swift */,
 				FF10026C2B2751760011A4DC /* SettingsView.swift */,
 				FF0146CA2B3DA1DF00A2A9F6 /* Settings.swift */,
 			);
@@ -743,6 +752,9 @@
 				02A10001300000000000A001 /* ModelCapabilityBadges.swift in Sources */,
 				02A10003300000000000A003 /* ThinkingView.swift in Sources */,
 				02A10005300000000000A005 /* ModelManagementView.swift in Sources */,
+				02B10001300000000000B001 /* PersonaSD.swift in Sources */,
+				02B10003300000000000B003 /* PersonaStore.swift in Sources */,
+				02B10005300000000000B005 /* PersonaEditorView.swift in Sources */,
 				FFD57E322BF291B2003FEFF1 /* CodeBlockView.swift in Sources */,
 				FF1002542B261D460011A4DC /* MessageListVIew.swift in Sources */,
 				FF10024E2B25C2A70011A4DC /* ConversationSD.swift in Sources */,

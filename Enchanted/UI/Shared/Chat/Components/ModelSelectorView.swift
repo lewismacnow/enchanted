@@ -9,40 +9,79 @@ import SwiftUI
 
 struct ModelSelectorView: View {
     var modelsList: [LanguageModelSD]
+    var personas: [PersonaSD] = []
     var selectedModel: LanguageModelSD?
+    var activePersona: PersonaSD?
     var onSelectModel: @MainActor (_ model: LanguageModelSD?) -> ()
+    var onSelectPersona: (@MainActor (_ persona: PersonaSD) -> Void)?
     var showChevron = true
 
     var body: some View {
         Menu {
-            ForEach(modelsList, id: \.self) { model in
-                Button(action: {
-                    withAnimation(.easeOut) {
-                        onSelectModel(model)
-                    }
-                }) {
-                    Label {
-                        HStack(spacing: 6) {
-                            Text(model.name)
-                                .font(.body)
-                            if model.supportsImages {
-                                Image(systemName: "eye.fill")
-                                    .font(.caption2)
+            Section("Models") {
+                ForEach(modelsList, id: \.self) { model in
+                    Button(action: {
+                        withAnimation(.easeOut) {
+                            onSelectModel(model)
+                        }
+                    }) {
+                        Label {
+                            HStack(spacing: 6) {
+                                Text(model.name)
+                                    .font(.body)
+                                if model.supportsImages {
+                                    Image(systemName: "eye.fill")
+                                        .font(.caption2)
+                                }
+                                if model.supportsThinking {
+                                    Image(systemName: "brain.head.profile")
+                                        .font(.caption2)
+                                }
                             }
-                            if model.supportsThinking {
-                                Image(systemName: "brain.head.profile")
-                                    .font(.caption2)
+                        } icon: {
+                            Image(systemName: model.modelProvider == .openai ? "globe" : "server.rack")
+                        }
+                        .tag(model.name)
+                    }
+                }
+            }
+
+            if !personas.isEmpty {
+                Divider()
+                Section("Personas") {
+                    ForEach(personas) { persona in
+                        Button(action: {
+                            withAnimation(.easeOut) {
+                                onSelectPersona?(persona)
+                            }
+                        }) {
+                            Label {
+                                HStack(spacing: 6) {
+                                    Text(persona.name)
+                                        .font(.body)
+                                    if let model = persona.baseModel {
+                                        Text("(\(model.prettyName))")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                            } icon: {
+                                Image(systemName: persona.icon)
                             }
                         }
-                    } icon: {
-                        Image(systemName: model.modelProvider == .openai ? "globe" : "server.rack")
                     }
-                    .tag(model.name)
                 }
             }
         } label: {
             HStack(alignment: .center, spacing: 4) {
-                if let selectedModel = selectedModel {
+                if let persona = activePersona {
+                    HStack(alignment: .center, spacing: 5) {
+                        Image(systemName: persona.icon)
+                            .font(.caption)
+                        Text(persona.name)
+                            .font(.body)
+                    }
+                } else if let selectedModel = selectedModel {
                     HStack(alignment: .center, spacing: 5) {
 #if os(macOS) || os(visionOS)
                         Text(selectedModel.name)
@@ -71,7 +110,7 @@ struct ModelSelectorView: View {
                     .showIf(showChevron)
             }
             .accessibilityLabel("Select model")
-            .accessibilityHint("Opens model picker with available LLM models")
+            .accessibilityHint("Opens model picker with available LLM models and personas")
         }
     }
 }

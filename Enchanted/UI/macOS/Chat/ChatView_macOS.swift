@@ -14,6 +14,8 @@ struct ChatView: View {
     var conversations: [ConversationSD]
     var messages: [MessageSD]
     var modelsList: [LanguageModelSD]
+    var personas: [PersonaSD] = []
+    var activePersona: PersonaSD?
     var onMenuTap: () -> ()
     var onNewConversationTap: () -> ()
     var onSendMessageTap: @MainActor (_ prompt: String, _ model: LanguageModelSD, _ image: Image?, _ trimmingMessageId: String?) -> ()
@@ -24,6 +26,7 @@ struct ChatView: View {
     var modelSupportsImages: Bool
     var selectedModel: LanguageModelSD?
     var onSelectModel: @MainActor (_ model: LanguageModelSD?) -> ()
+    var onSelectPersona: (@MainActor (_ persona: PersonaSD) -> Void)?
     var onConversationDelete: (_ conversation: ConversationSD) -> ()
     var onDeleteDailyConversations: (_ date: Date) -> ()
     var userInitials: String
@@ -116,8 +119,11 @@ struct ChatView: View {
                 ToolbarItemGroup(placement: .automatic) {
                     ToolbarView(
                         modelsList: modelsList,
+                        personas: personas,
                         selectedModel: selectedModel,
+                        activePersona: activePersona,
                         onSelectModel: onSelectModel,
+                        onSelectPersona: onSelectPersona,
                         onNewConversationTap: onNewConversationTap,
                         copyChat: copyChat
                     )

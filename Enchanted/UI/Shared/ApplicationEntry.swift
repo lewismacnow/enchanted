@@ -13,6 +13,7 @@ struct ApplicationEntry: View {
     @State private var languageModelStore = LanguageModelStore.shared
     @State private var conversationStore = ConversationStore.shared
     @State private var completionsStore = CompletionsStore.shared
+    @State private var personaStore = PersonaStore.shared
     @State private var appStore = AppStore.shared
     
     var body: some View {
@@ -46,6 +47,7 @@ struct ApplicationEntry: View {
                 await MainActor.run {
                     completionsStore.load()
                 }
+                await personaStore.loadPersonas()
             }
         }
         .preferredColorScheme(colorScheme.toiOSFormat)
