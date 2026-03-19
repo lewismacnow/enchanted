@@ -137,6 +137,7 @@
 		AA000001WATCH000000000004 /* WatchMessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002WATCH000000000004 /* WatchMessageRow.swift */; };
 		AA000001WATCH000000000005 /* WatchSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002WATCH000000000005 /* WatchSettingsView.swift */; };
 		AA000001WATCH000000000006 /* WatchModelPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002WATCH000000000006 /* WatchModelPickerView.swift */; };
+		AA000001WATCH000000000007 /* WatchNewChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002WATCH000000000007 /* WatchNewChatView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -265,6 +266,7 @@
 		AA000002WATCH000000000004 /* WatchMessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMessageRow.swift; sourceTree = "<group>"; };
 		AA000002WATCH000000000005 /* WatchSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSettingsView.swift; sourceTree = "<group>"; };
 		AA000002WATCH000000000006 /* WatchModelPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchModelPickerView.swift; sourceTree = "<group>"; };
+		AA000002WATCH000000000007 /* WatchNewChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchNewChatView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -651,6 +653,7 @@
 				AA000002WATCH000000000004 /* WatchMessageRow.swift */,
 				AA000002WATCH000000000005 /* WatchSettingsView.swift */,
 				AA000002WATCH000000000006 /* WatchModelPickerView.swift */,
+				AA000002WATCH000000000007 /* WatchNewChatView.swift */,
 			);
 			path = watchOS;
 			sourceTree = "<group>";
@@ -894,6 +897,7 @@
 				AA000001WATCH000000000004 /* WatchMessageRow.swift in Sources */,
 				AA000001WATCH000000000005 /* WatchSettingsView.swift in Sources */,
 				AA000001WATCH000000000006 /* WatchModelPickerView.swift in Sources */,
+				AA000001WATCH000000000007 /* WatchNewChatView.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */

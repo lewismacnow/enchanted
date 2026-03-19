@@ -8,6 +8,12 @@
 #if os(watchOS)
 import SwiftUI
 
+/// Navigation destinations for watchOS
+enum WatchDestination: Hashable {
+    case conversation(UUID)
+    case newChat
+}
+
 struct ChatView_watchOS: View {
     var conversations: [ConversationSD]
     var selectedConversation: ConversationSD?
@@ -31,22 +37,37 @@ struct ChatView_watchOS: View {
                 conversations: conversations,
                 onConversationTap: { conversation in
                     onConversationTap(conversation)
-                    navigationPath.append(conversation.id)
+                    navigationPath.append(WatchDestination.conversation(conversation.id))
                 },
-                onNewConversationTap: onNewConversationTap,
+                onNewConversationTap: {
+                    onNewConversationTap()
+                    navigationPath.append(WatchDestination.newChat)
+                },
                 onConversationDelete: onConversationDelete,
                 onShowSettings: { showSettings = true }
             )
-            .navigationDestination(for: UUID.self) { conversationId in
-                if let conversation = conversations.first(where: { $0.id == conversationId }) {
-                    WatchChatDetailView(
-                        conversation: conversation,
-                        messages: messages,
+            .navigationDestination(for: WatchDestination.self) { destination in
+                switch destination {
+                case .conversation(let conversationId):
+                    if let conversation = conversations.first(where: { $0.id == conversationId }) {
+                        WatchChatDetailView(
+                            conversation: conversation,
+                            messages: messages,
+                            modelsList: modelsList,
+                            selectedModel: selectedModel,
+                            conversationState: conversationState,
+                            onSelectModel: onSelectModel,
+                            onConversationTap: onConversationTap,
+                            onSendMessageTap: onSendMessageTap,
+                            onStopGenerateTap: onStopGenerateTap
+                        )
+                    }
+                case .newChat:
+                    WatchNewChatView(
                         modelsList: modelsList,
                         selectedModel: selectedModel,
                         conversationState: conversationState,
                         onSelectModel: onSelectModel,
-                        onConversationTap: onConversationTap,
                         onSendMessageTap: onSendMessageTap,
                         onStopGenerateTap: onStopGenerateTap
                     )
@@ -54,6 +75,15 @@ struct ChatView_watchOS: View {
             }
             .sheet(isPresented: $showSettings) {
                 WatchSettingsView()
+            }
+        }
+        // When a new conversation is created after sending a message,
+        // navigate to it automatically
+        .onChange(of: selectedConversation?.id) { oldId, newId in
+            if let newId, oldId == nil {
+                // A new conversation was just created — replace the newChat destination
+                navigationPath = NavigationPath()
+                navigationPath.append(WatchDestination.conversation(newId))
             }
         }
     }
