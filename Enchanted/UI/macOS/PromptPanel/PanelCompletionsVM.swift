@@ -5,6 +5,7 @@
 //  Originally created by Augustinas Malinauskas on 29/02/2024.
 //
 
+#if os(macOS)
 import SwiftUI
 import OllamaKit
 import Combine
@@ -127,3 +128,4 @@ final class CompletionsPanelVM {
         generation?.cancel()
     }
 }
+#endif

@@ -65,7 +65,7 @@ struct ConversationHistoryList: View {
                     Text("Pinned")
                         .font(.system(size: 14))
                         .fontWeight(.semibold)
-                        .foregroundColor(Color(.systemGray))
+                        .foregroundColor(Color.gray)
                     Spacer()
                 }
 
@@ -83,7 +83,7 @@ struct ConversationHistoryList: View {
                     Text(conversationGroup.date.daysAgoString())
                         .font(.system(size: 14))
                         .fontWeight(.semibold)
-                        .foregroundColor(Color(.systemGray))
+                        .foregroundColor(Color.gray)
 
                     Spacer()
                 }

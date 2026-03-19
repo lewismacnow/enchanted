@@ -1,3 +1,4 @@
+#if !os(watchOS)
 //
 //  DejaViewSettingsView.swift
 //  Re-Enchanted
@@ -263,3 +264,4 @@ struct DejaViewSettingsView: View {
     DejaViewSettingsView()
         .frame(width: 500, height: 500)
 }
+#endif

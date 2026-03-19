@@ -134,6 +134,34 @@ struct Chat: View, Sendable {
         }
     }
     
+    #if os(watchOS)
+    var body: some View {
+        ChatView_watchOS(
+            conversations: conversationStore.conversations,
+            selectedConversation: conversationStore.selectedConversation,
+            messages: conversationStore.messages,
+            modelsList: languageModelStore.visibleModels,
+            selectedModel: languageModelStore.selectedModel,
+            conversationState: conversationStore.conversationState,
+            onSelectModel: languageModelStore.setModel,
+            onConversationTap: onConversationTap,
+            onNewConversationTap: newConversation,
+            onSendMessageTap: sendMessage,
+            onStopGenerateTap: onStopGenerateTap,
+            onConversationDelete: onConversationDelete
+        )
+        .onChange(of: languageModelStore.models, { _, _ in
+            if languageModelStore.selectedModel == nil { updateSelectedModel() }
+        })
+        .onChange(of: conversationStore.selectedConversation, initial: true, { _, newConversation in
+            if let conversation = newConversation {
+                languageModelStore.setModel(model: conversation.model)
+            } else {
+                updateSelectedModel()
+            }
+        })
+    }
+    #else
     var body: some View {
         Group {
 #if os(macOS) || os(visionOS)
@@ -205,4 +233,5 @@ struct Chat: View, Sendable {
             }
         })
     }
+    #endif
 }

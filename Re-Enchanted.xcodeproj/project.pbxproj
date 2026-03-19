@@ -39,7 +39,7 @@
 		FF0146CB2B3DA1DF00A2A9F6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0146CA2B3DA1DF00A2A9F6 /* Settings.swift */; };
 		FF0146CD2B3DADCA00A2A9F6 /* HapticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0146CC2B3DADCA00A2A9F6 /* HapticsService.swift */; };
 		FF0611EA2C04A11800443B33 /* Magnet in Frameworks */ = {isa = PBXBuildFile; platformFilters = (macos, ); productRef = FF0611E92C04A11800443B33 /* Magnet */; };
-		FF0611F12C04A2FB00443B33 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = FF0611F02C04A2FB00443B33 /* Splash */; };
+		FF0611F12C04A2FB00443B33 /* Splash in Frameworks */ = {isa = PBXBuildFile; platformFilters = (ios, macos, ); productRef = FF0611F02C04A2FB00443B33 /* Splash */; };
 		FF0611F32C04BEFE00443B33 /* AVSpeechSynthesisVoice+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0611F22C04BEFD00443B33 /* AVSpeechSynthesisVoice+Extension.swift */; };
 		FF1002302B2482BA0011A4DC /* ChatMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF10022F2B2482BA0011A4DC /* ChatMessageView.swift */; };
 		FF1002322B2483A20011A4DC /* Colours+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1002312B2483A20011A4DC /* Colours+Extension.swift */; };
@@ -65,7 +65,7 @@
 		FF1002732B276EC10011A4DC /* AppColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1002722B276EC10011A4DC /* AppColorScheme.swift */; };
 		FF1002752B278C170011A4DC /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1002742B278C170011A4DC /* AppStore.swift */; };
 		FF15EF6A2B826C0300D4A541 /* SimpleFloatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF15EF692B826C0300D4A541 /* SimpleFloatingButton.swift */; };
-		FF1BC3C72BA0757700A58043 /* SplashSyntaxHighlighter+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1BC3C62BA0757700A58043 /* SplashSyntaxHighlighter+Extension.swift */; };
+		FF1BC3C72BA0757700A58043 /* SplashSyntaxHighlighter+Extension.swift in Sources */ = {isa = PBXBuildFile; platformFilters = (ios, macos, ); fileRef = FF1BC3C62BA0757700A58043 /* SplashSyntaxHighlighter+Extension.swift */; };
 		FF226A652BE2A0EC00CC91F1 /* SelectTextSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF226A642BE2A0EC00CC91F1 /* SelectTextSheet.swift */; };
 		FF24B30E2B66BE8500AB618F /* RunningBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF24B30D2B66BE8500AB618F /* RunningBorder.swift */; };
 		FF2F03422B795E0B00349855 /* Clipboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2F03412B795E0B00349855 /* Clipboard.swift */; };
@@ -80,7 +80,7 @@
 		FF38F8582B7AB1AD00546B56 /* PanelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF38F8572B7AB1AD00546B56 /* PanelManager.swift */; };
 		FF38F85A2B7AB28300546B56 /* PromptPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF38F8592B7AB28300546B56 /* PromptPanelView.swift */; };
 		FF38F85C2B7ABC2C00546B56 /* PromptPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF38F85B2B7ABC2C00546B56 /* PromptPanel.swift */; };
-		FF4A605D2BC3587800D7BD4F /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = FF4A605C2BC3587800D7BD4F /* KeyboardShortcuts */; };
+		FF4A605D2BC3587800D7BD4F /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; platformFilters = (macos, ); productRef = FF4A605C2BC3587800D7BD4F /* KeyboardShortcuts */; };
 		FF5FA0D62B35169400BC471D /* Binding+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5FA0D52B35169400BC471D /* Binding+Extension.swift */; };
 		FF66A51D2B76949A00FAAC1E /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF66A51C2B76949A00FAAC1E /* Helpers.swift */; };
 		FF6B7B132B3EE7AC00E8FEA3 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6B7B122B3EE7AC00E8FEA3 /* Throttler.swift */; };
@@ -95,7 +95,7 @@
 		FF6D82252B9204F3001183A8 /* AsyncQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6D82242B9204F3001183A8 /* AsyncQueue.swift */; };
 		FF79AEB62CE72ECE00EDE10C /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = FF79AEB52CE72ECE00EDE10C /* MarkdownUI */; };
 		FF7FBE4C2B78E384000901F7 /* SamplePrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF7FBE4B2B78E384000901F7 /* SamplePrompt.swift */; };
-		FF911DF12B98F08800915E94 /* WrappingHStack in Frameworks */ = {isa = PBXBuildFile; productRef = FF911DF02B98F08800915E94 /* WrappingHStack */; };
+		FF911DF12B98F08800915E94 /* WrappingHStack in Frameworks */ = {isa = PBXBuildFile; platformFilters = (ios, macos, xros, ); productRef = FF911DF02B98F08800915E94 /* WrappingHStack */; };
 		FF9300D42B778829000859F4 /* ChatView_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF9300D32B778829000859F4 /* ChatView_macOS.swift */; };
 		FF9300DA2B781D97000859F4 /* ToolbarView_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF9300D92B781D97000859F4 /* ToolbarView_macOS.swift */; };
 		FF9300DC2B7823B0000859F4 /* EmptyConversaitonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF9300DB2B7823B0000859F4 /* EmptyConversaitonView.swift */; };
@@ -116,8 +116,8 @@
 		FFCF00F12C03209A00590E79 /* SpeechService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCF00F02C03209A00590E79 /* SpeechService.swift */; };
 		FFD57E302BF29145003FEFF1 /* MarkdownColours.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD57E2F2BF29145003FEFF1 /* MarkdownColours.swift */; };
 		FFD57E322BF291B2003FEFF1 /* CodeBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD57E312BF291B2003FEFF1 /* CodeBlockView.swift */; };
-		FFD5FAD22B8130490055AB51 /* Vortex in Frameworks */ = {isa = PBXBuildFile; productRef = FF464B122B8026DA008E5130 /* Vortex */; };
-		FFD5FAD52B8130CE0055AB51 /* OllamaKit in Frameworks */ = {isa = PBXBuildFile; productRef = FFD5FAD42B8130CE0055AB51 /* OllamaKit */; };
+		FFD5FAD22B8130490055AB51 /* Vortex in Frameworks */ = {isa = PBXBuildFile; platformFilters = (ios, macos, xros, ); productRef = FF464B122B8026DA008E5130 /* Vortex */; };
+		FFD5FAD52B8130CE0055AB51 /* OllamaKit in Frameworks */ = {isa = PBXBuildFile; platformFilters = (ios, macos, ); productRef = FFD5FAD42B8130CE0055AB51 /* OllamaKit */; };
 		FFE21C782B82353A00A69B9C /* SleepTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFE21C772B82353A00A69B9C /* SleepTest.swift */; };
 		FFE2C8232B9A657A00BD82F3 /* Accessibility.plist in Resources */ = {isa = PBXBuildFile; fileRef = FFE2C8222B9A657A00BD82F3 /* Accessibility.plist */; };
 		FFEB9CA82BA04304004B1F3D /* NotificationMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFEB9CA72BA04304004B1F3D /* NotificationMessage.swift */; };
@@ -131,6 +131,12 @@
 		FFEC9BE72B813A8D00AFBA63 /* RemovableImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFEC9BE62B813A8D00AFBA63 /* RemovableImage.swift */; };
 		FFFD00C22B92607800392AE6 /* CompletionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFD00C12B92607800392AE6 /* CompletionsStore.swift */; };
 		FFFD00C92B94CB5E00392AE6 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = FFFD00C82B94CB5E00392AE6 /* AsyncAlgorithms */; };
+		AA000001WATCH000000000001 /* ChatView_watchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002WATCH000000000001 /* ChatView_watchOS.swift */; };
+		AA000001WATCH000000000002 /* WatchConversationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002WATCH000000000002 /* WatchConversationListView.swift */; };
+		AA000001WATCH000000000003 /* WatchChatDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002WATCH000000000003 /* WatchChatDetailView.swift */; };
+		AA000001WATCH000000000004 /* WatchMessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002WATCH000000000004 /* WatchMessageRow.swift */; };
+		AA000001WATCH000000000005 /* WatchSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002WATCH000000000005 /* WatchSettingsView.swift */; };
+		AA000001WATCH000000000006 /* WatchModelPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002WATCH000000000006 /* WatchModelPickerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -253,6 +259,12 @@
 		FFEC9BE22B81358800AFBA63 /* DeallocPrinter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeallocPrinter.swift; sourceTree = "<group>"; };
 		FFEC9BE62B813A8D00AFBA63 /* RemovableImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemovableImage.swift; sourceTree = "<group>"; };
 		FFFD00C12B92607800392AE6 /* CompletionsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionsStore.swift; sourceTree = "<group>"; };
+		AA000002WATCH000000000001 /* ChatView_watchOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView_watchOS.swift; sourceTree = "<group>"; };
+		AA000002WATCH000000000002 /* WatchConversationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConversationListView.swift; sourceTree = "<group>"; };
+		AA000002WATCH000000000003 /* WatchChatDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchChatDetailView.swift; sourceTree = "<group>"; };
+		AA000002WATCH000000000004 /* WatchMessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchMessageRow.swift; sourceTree = "<group>"; };
+		AA000002WATCH000000000005 /* WatchSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSettingsView.swift; sourceTree = "<group>"; };
+		AA000002WATCH000000000006 /* WatchModelPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchModelPickerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -623,10 +635,24 @@
 			children = (
 				FF66A51F2B77789300FAAC1E /* iOS */,
 				FF66A51E2B77788D00FAAC1E /* macOS */,
+				AA000003WATCH000000000000 /* watchOS */,
 				FFEC32A72B247896003E5C04 /* Shared */,
 				FF66A51C2B76949A00FAAC1E /* Helpers.swift */,
 			);
 			path = UI;
+			sourceTree = "<group>";
+		};
+		AA000003WATCH000000000000 /* watchOS */ = {
+			isa = PBXGroup;
+			children = (
+				AA000002WATCH000000000001 /* ChatView_watchOS.swift */,
+				AA000002WATCH000000000002 /* WatchConversationListView.swift */,
+				AA000002WATCH000000000003 /* WatchChatDetailView.swift */,
+				AA000002WATCH000000000004 /* WatchMessageRow.swift */,
+				AA000002WATCH000000000005 /* WatchSettingsView.swift */,
+				AA000002WATCH000000000006 /* WatchModelPickerView.swift */,
+			);
+			path = watchOS;
 			sourceTree = "<group>";
 		};
 		02D20001300000000000E001 /* DejaView */ = {
@@ -862,6 +888,12 @@
 				FF10025E2B2648460011A4DC /* ConversationState.swift in Sources */,
 				FFEC9BE72B813A8D00AFBA63 /* RemovableImage.swift in Sources */,
 				FFFD00C22B92607800392AE6 /* CompletionsStore.swift in Sources */,
+				AA000001WATCH000000000001 /* ChatView_watchOS.swift in Sources */,
+				AA000001WATCH000000000002 /* WatchConversationListView.swift in Sources */,
+				AA000001WATCH000000000003 /* WatchChatDetailView.swift in Sources */,
+				AA000001WATCH000000000004 /* WatchMessageRow.swift in Sources */,
+				AA000001WATCH000000000005 /* WatchSettingsView.swift in Sources */,
+				AA000001WATCH000000000006 /* WatchModelPickerView.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
@@ -1024,13 +1056,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx watchos watchsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_STRICT_CONCURRENCY = targeted;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,4";
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 				XROS_DEPLOYMENT_TARGET = 1.1;
 			};
 			name = Debug;
@@ -1076,13 +1109,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx watchos watchsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_STRICT_CONCURRENCY = targeted;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,4";
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 				XROS_DEPLOYMENT_TARGET = 1.1;
 			};
 			name = Release;

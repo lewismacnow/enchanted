@@ -1,3 +1,4 @@
+#if !os(watchOS)
 //
 //  ScreenCaptureResultView.swift
 //  Re-Enchanted
@@ -132,3 +133,4 @@ struct ScreenCaptureResultView: View {
     .padding()
     .frame(width: 500)
 }
+#endif

@@ -5,6 +5,7 @@
 //  Created by Augustinas Malinauskas on 19/02/2024.
 //
 
+#if !os(watchOS)
 import SwiftUI
 
 struct KeyboardShortcut: Identifiable {
@@ -64,3 +65,4 @@ struct KeyboardShortcutsDemo: View {
 #Preview {
     KeyboardShortcutsDemo()
 }
+#endif

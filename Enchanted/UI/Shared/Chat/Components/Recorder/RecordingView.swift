@@ -1,3 +1,4 @@
+#if !os(watchOS)
 //
 //  SwiftUIView.swift
 //  Enchanted
@@ -70,3 +71,4 @@ struct MeetingView_Previews: PreviewProvider {
         RecordingView(speechRecognizer: SpeechRecognizer(), isRecording: .constant(true))
     }
 }
+#endif

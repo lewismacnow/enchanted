@@ -41,9 +41,11 @@ struct UnreachableAPIView: View {
         .background(Color(.pink).opacity(0.2))
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .padding()
+       #if !os(watchOS)
        .sheet(isPresented: $showSettings) {
            Settings()
        }
+       #endif
     }
 }
 

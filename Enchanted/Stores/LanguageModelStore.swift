@@ -130,6 +130,10 @@ final class LanguageModelStore: @unchecked Sendable {
            let settings = try? JSONDecoder().decode(ProviderSettings.self, from: data) {
             return settings.provider
         }
+        #if os(watchOS)
+        return .openai
+        #else
         return .ollama
+        #endif
     }
 }

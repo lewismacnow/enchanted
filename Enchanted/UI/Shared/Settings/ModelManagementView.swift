@@ -1,3 +1,4 @@
+#if !os(watchOS)
 //
 //  ModelManagementView.swift
 //  Re-Enchanted
@@ -91,3 +92,4 @@ struct ModelManagementView: View {
     ModelManagementView()
         .frame(width: 500, height: 400)
 }
+#endif

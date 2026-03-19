@@ -1,3 +1,4 @@
+#if !os(watchOS)
 //
 //  PersonaEditorView.swift
 //  Re-Enchanted
@@ -202,3 +203,4 @@ struct CreatePersonaSheet: View {
     PersonaEditorView()
         .frame(width: 500, height: 400)
 }
+#endif

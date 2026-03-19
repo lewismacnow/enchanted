@@ -1,22 +1,21 @@
 //
 //  Clipboard.swift
-//  Enchanted
+//  Re-Enchanted
 //
-//  Created by Augustinas Malinauskas on 11/02/2024.
+//  Originally created by Augustinas Malinauskas on 11/02/2024.
 //
 
 import Foundation
 
 #if os(macOS)
 import AppKit
-#else
+#elseif !os(watchOS)
 import UIKit
 #endif
 
-
 final class Clipboard: Sendable {
     static let shared = Clipboard()
-    
+
     func setString(_ message: String) {
 #if os(iOS)
         UIPasteboard.general.string = message
@@ -25,13 +24,12 @@ final class Clipboard: Sendable {
         pasteboard.declareTypes([.string], owner: nil)
         pasteboard.setString(message, forType: .string)
 #endif
+        // watchOS: no pasteboard API, no-op
     }
-    
+
     func getImage() -> PlatformImage? {
-        #if os(iOS)
-        if let image = UIPasteboard.general.image {
-            return image
-        }
+#if os(iOS)
+        return UIPasteboard.general.image
 #elseif os(macOS)
         let pb = NSPasteboard.general
         let type = NSPasteboard.PasteboardType.tiff
@@ -41,21 +39,20 @@ final class Clipboard: Sendable {
         return nil
 #endif
     }
-    
+
     func getText() -> String? {
 #if os(iOS) || os(visionOS)
         return UIPasteboard.general.string
 #elseif os(macOS)
         return NSPasteboard.general.string(forType: .string)
+#else
+        return nil
 #endif
     }
-    
-    /// Paste from clipboard - handles both text and images
+
     func paste() -> (text: String?, image: PlatformImage?) {
         let text = getText()
         let image = getImage()
         return (text, image)
     }
 }
-
-

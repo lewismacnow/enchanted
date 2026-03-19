@@ -5,6 +5,7 @@
 //  Created by Augustinas Malinauskas on 09/12/2023.
 //
 
+#if !os(watchOS)
 import SwiftUI
 import MarkdownUI
 import ActivityIndicatorView
@@ -180,3 +181,4 @@ struct ChatMessageView: View {
         ChatMessageView(message: MessageSD(content: "```python \nprint(5+5)\n```", role: "ai"), showLoader: true, userInitials: "AM", editMessage: .constant(nil))
     }
 }
+#endif

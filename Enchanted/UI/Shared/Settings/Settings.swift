@@ -1,3 +1,4 @@
+#if !os(watchOS)
 //
 //  Settings.swift
 //  Re-Enchanted
@@ -110,3 +111,4 @@ struct Settings: View {
 #Preview {
     Settings()
 }
+#endif

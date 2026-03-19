@@ -1,3 +1,4 @@
+#if !os(watchOS)
 //
 //  MessageListVIew.swift
 //  Enchanted
@@ -129,3 +130,4 @@ struct MessageListView: View {
         editMessage: .constant(MessageSD.sample[0])
     )
 }
+#endif

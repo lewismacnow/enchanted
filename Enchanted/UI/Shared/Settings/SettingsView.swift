@@ -1,3 +1,4 @@
+#if !os(watchOS)
 //
 //  SettingsView.swift
 //  Re-Enchanted
@@ -260,3 +261,4 @@ struct SettingsView: View {
         voices: []
     )
 }
+#endif

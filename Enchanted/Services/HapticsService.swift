@@ -27,14 +27,19 @@ final class Haptics: Sendable {
         }
     }
 
-    func lightTap() {
-        play(.light)
-    }
-
-    func mediumTap() {
-        play(.medium)
-    }
+    func lightTap() { play(.light) }
+    func mediumTap() { play(.medium) }
 }
+
+#elseif os(watchOS)
+import WatchKit
+
+final class Haptics: Sendable {
+    static let shared = Haptics()
+    func lightTap() { WKInterfaceDevice.current().play(.click) }
+    func mediumTap() { WKInterfaceDevice.current().play(.click) }
+}
+
 #else
 final class Haptics: Sendable {
     static let shared = Haptics()

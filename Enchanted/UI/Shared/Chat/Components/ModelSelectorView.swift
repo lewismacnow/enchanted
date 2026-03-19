@@ -5,6 +5,7 @@
 //  Originally created by Augustinas Malinauskas on 11/12/2023.
 //
 
+#if !os(watchOS)
 import SwiftUI
 
 struct ModelSelectorView: View {
@@ -123,3 +124,4 @@ struct ModelSelectorView: View {
         showChevron: false
     )
 }
+#endif

@@ -40,17 +40,21 @@ struct ConditionalView: ViewModifier {
 extension View {
     /// Usually you would pass  `@Environment(\.displayScale) var displayScale`
     @MainActor func render(scale displayScale: CGFloat = 1.0) -> PlatformImage? {
+#if os(watchOS)
+        // ImageRenderer is not available on watchOS
+        return nil
+#else
         let renderer = ImageRenderer(content: self)
-        
         renderer.scale = displayScale
-        
+
 #if os(iOS) || os(visionOS)
         let image = renderer.uiImage
 #elseif os(macOS)
         let image = renderer.nsImage
 #endif
-        
+
         return image
+#endif
     }
 }
 
@@ -113,12 +117,9 @@ extension View {
 }
 
 
+#if !os(watchOS)
 extension View {
     /// Adds an underlying hidden button with a performing action that is triggered on pressed shortcut
-    /// - Parameters:
-    ///   - key: Key equivalents consist of a letter, punctuation, or function key that can be combined with an optional set of modifier keys to specify a keyboard shortcut.
-    ///   - modifiers: A set of key modifiers that you can add to a gesture.
-    ///   - perform: Action to perform when the shortcut is pressed
     public func onKeyboardShortcut(key: KeyEquivalent, modifiers: EventModifiers = .command, perform: @escaping () -> ()) -> some View {
         ZStack {
             Button("") {
@@ -126,8 +127,9 @@ extension View {
             }
             .hidden()
             .keyboardShortcut(key, modifiers: modifiers)
-            
+
             self
         }
     }
 }
+#endif

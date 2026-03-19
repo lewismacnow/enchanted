@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct SidebarView: View {
+    #if !os(watchOS)
     @Environment(\.openWindow) var openWindow
+    #endif
     var selectedConversation: ConversationSD?
     var conversations: [ConversationSD]
     var onConversationTap: (_ conversation: ConversationSD) -> ()
@@ -88,9 +90,11 @@ struct SidebarView: View {
 #if os(macOS)
         .focusedSceneValue(\.showSettings, $showSettings)
 #endif
+        #if !os(watchOS)
         .sheet(isPresented: $showSettings) {
             Settings()
         }
+        #endif
 #if os(macOS)
         .sheet(isPresented: $showCompletions) {
             CompletionsEditor()

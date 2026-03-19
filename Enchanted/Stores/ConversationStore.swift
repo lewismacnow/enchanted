@@ -8,8 +8,10 @@
 
 import Foundation
 import SwiftData
+#if !os(watchOS)
 @preconcurrency import OllamaKit
 import Combine
+#endif
 import SwiftUI
 
 @Observable
@@ -17,7 +19,9 @@ final class ConversationStore: @unchecked Sendable {
     static let shared = ConversationStore(swiftDataService: SwiftDataService.shared)
 
     private let swiftDataService: SwiftDataService
+    #if !os(watchOS)
     private var generation: AnyCancellable?
+    #endif
     private var openAITask: Task<Void, Never>?
 
     private var currentMessageBuffer: String = ""
@@ -127,7 +131,9 @@ final class ConversationStore: @unchecked Sendable {
     }
 
     @MainActor func stopGenerate() {
+        #if !os(watchOS)
         generation?.cancel()
+        #endif
         openAITask?.cancel()
         openAITask = nil
         handleComplete()
@@ -183,7 +189,13 @@ final class ConversationStore: @unchecked Sendable {
 
                 switch provider {
                 case .ollama:
+                    #if os(watchOS)
+                    await MainActor.run {
+                        self.handleError("Ollama is not supported on Apple Watch. Use an OpenAI-compatible provider in Settings.")
+                    }
+                    #else
                     await sendViaOllama(model: model, conversation: conversation, image: image)
+                    #endif
                 case .openai:
                     await sendViaOpenAI(model: model, conversation: conversation, image: image)
                 }
@@ -195,6 +207,7 @@ final class ConversationStore: @unchecked Sendable {
 
     // MARK: - Ollama Provider
 
+    #if !os(watchOS)
     @MainActor
     private func sendViaOllama(model: LanguageModelSD, conversation: ConversationSD, image: Image?) async {
         let sortedMessages = conversation.messages.sorted { $0.createdAt < $1.createdAt }
@@ -254,6 +267,7 @@ final class ConversationStore: @unchecked Sendable {
             self.handleError("Ollama server unreachable")
         }
     }
+    #endif
 
     // MARK: - OpenAI Provider
 
@@ -314,6 +328,7 @@ final class ConversationStore: @unchecked Sendable {
 
     // MARK: - Response Handlers
 
+    #if !os(watchOS)
     @MainActor
     private func handleOllamaReceive(_ response: OKChatResponse) {
         guard !messages.isEmpty else { return }
@@ -330,6 +345,7 @@ final class ConversationStore: @unchecked Sendable {
             }
         }
     }
+    #endif
 
     @MainActor
     private func handleOpenAIReceive(_ content: String) {

@@ -1,3 +1,4 @@
+#if !os(watchOS)
 //
 //  ToolCallView.swift
 //  Re-Enchanted
@@ -131,3 +132,4 @@ struct ToolCallView: View {
     }
     .padding()
 }
+#endif

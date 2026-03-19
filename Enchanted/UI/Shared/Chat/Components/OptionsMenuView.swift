@@ -1,3 +1,4 @@
+#if !os(watchOS)
 //
 //  OptionsMenuView.swift
 //  Enchanted
@@ -30,3 +31,4 @@ struct MoreOptionsMenuView: View {
 #Preview {
     MoreOptionsMenuView(copyChat: {_ in})
 }
+#endif

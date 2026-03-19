@@ -7,6 +7,8 @@
 //
 
 import Foundation
+
+#if !os(watchOS)
 import OllamaKit
 
 class OllamaService: @unchecked Sendable {
@@ -54,3 +56,26 @@ class OllamaService: @unchecked Sendable {
         return await ollamaKit.reachable()
     }
 }
+
+#else
+// MARK: - watchOS Stub
+// OllamaKit does not support watchOS. Provide a stub that satisfies call sites.
+
+class OllamaService: @unchecked Sendable {
+    static let shared = OllamaService()
+
+    let ollamaKit = OllamaKitStub()
+
+    func initEndpoint(url: String? = nil, bearerToken: String? = nil) {}
+
+    func getModels() async throws -> [LanguageModel] { [] }
+
+    func reachable() async -> Bool { false }
+}
+
+/// Minimal stub to satisfy `OllamaService.shared.ollamaKit.reachable()` call sites.
+struct OllamaKitStub: Sendable {
+    func reachable() async -> Bool { false }
+}
+
+#endif

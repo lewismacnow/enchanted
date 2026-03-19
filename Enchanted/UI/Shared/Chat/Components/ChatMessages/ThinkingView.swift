@@ -1,3 +1,4 @@
+#if !os(watchOS)
 //
 //  ThinkingView.swift
 //  Re-Enchanted
@@ -124,3 +125,4 @@ struct ThinkingView: View {
     )
     .padding()
 }
+#endif

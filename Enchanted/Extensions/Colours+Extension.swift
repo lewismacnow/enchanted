@@ -9,10 +9,13 @@ import SwiftUI
 
 // MARK: - Palette
 extension Color {
+    #if os(watchOS)
+    static let labelCustom = Color.white
+    #else
     static let primary = Color(.label)
-    static let secondary =  Color(.systemGray)
-    
+    static let secondary = Color(.systemGray)
     static let labelCustom = Color("label")
+    #endif
 }
 
 // MARK: - hex

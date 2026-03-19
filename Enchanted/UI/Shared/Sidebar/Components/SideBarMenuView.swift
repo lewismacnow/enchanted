@@ -50,7 +50,7 @@ struct SideBarStack<SidebarContent: View, Content: View>: View {
                 .overlay(
                     Group {
                         if showSidebar {
-                            Color(.systemGray)
+                            Color.gray
                                 .ignoresSafeArea()
                                 .opacity(showSidebar ? (offset/sidebarWidth * 0.3) : 0.1)
                                 .onTapGesture {

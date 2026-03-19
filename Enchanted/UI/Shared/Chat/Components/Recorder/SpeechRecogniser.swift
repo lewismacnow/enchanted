@@ -5,7 +5,7 @@
 //  Created by Augustinas Malinauskas on 21/12/2023.
 //
 
-//#if os(iOS)
+#if !os(watchOS)
 import Foundation
 import Speech
 
@@ -219,4 +219,4 @@ extension AVAudioSession {
     }
 }
 #endif
-//#endif
+#endif
