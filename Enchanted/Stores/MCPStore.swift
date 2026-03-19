@@ -38,35 +38,37 @@ final class MCPStore: @unchecked Sendable {
         }
     }
 
+    @MainActor
     func saveServers() {
-        Task { @MainActor in
-            if let data = try? JSONEncoder().encode(self.servers) {
-                UserDefaults.standard.set(data, forKey: Self.userDefaultsKey)
-            }
+        if let data = try? JSONEncoder().encode(self.servers) {
+            UserDefaults.standard.set(data, forKey: Self.userDefaultsKey)
         }
     }
 
     // MARK: - Server Management
 
+    @MainActor
     func addServer(_ config: MCPServerConfig) {
-        Task { @MainActor in
-            self.servers.append(config)
-        }
+        self.servers.append(config)
         saveServers()
     }
 
+    @MainActor
     func removeServer(_ name: String) {
         disconnect(name)
-        Task { @MainActor in
-            self.servers.removeAll { $0.name == name }
-        }
+        self.servers.removeAll { $0.name == name }
         saveServers()
     }
 
     // MARK: - Connection Management
 
     func connectAll() async {
+        // Disconnect all first to prevent duplicate tools
+        disconnectAll()
+
         let configs: [MCPServerConfig] = await MainActor.run { self.servers }
+
+        var allTools: [MCPToolDefinition] = []
 
         for config in configs {
             do {
@@ -79,13 +81,28 @@ final class MCPStore: @unchecked Sendable {
                 for tool in tools {
                     toolServerMap[tool.name] = config.name
                 }
-
-                await MainActor.run {
-                    self.availableTools.append(contentsOf: tools)
-                }
+                allTools.append(contentsOf: tools)
             } catch {
                 print("Failed to connect MCP server '\(config.name)': \(error)")
             }
+        }
+
+        await MainActor.run {
+            self.availableTools = allTools
+        }
+    }
+
+    func disconnectAll() {
+        for (name, client) in clients {
+            client.stop()
+            let toolNames = toolServerMap.filter { $0.value == name }.map { $0.key }
+            for toolName in toolNames {
+                toolServerMap.removeValue(forKey: toolName)
+            }
+        }
+        clients.removeAll()
+        Task { @MainActor in
+            self.availableTools = []
         }
     }
 
@@ -95,7 +112,6 @@ final class MCPStore: @unchecked Sendable {
             clients.removeValue(forKey: name)
         }
 
-        // Remove tools belonging to this server
         let toolNames = toolServerMap.filter { $0.value == name }.map { $0.key }
         for toolName in toolNames {
             toolServerMap.removeValue(forKey: toolName)

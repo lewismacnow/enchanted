@@ -220,7 +220,7 @@ class OpenAIService: @unchecked Sendable {
         toolChoice: String? = nil
     ) -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { continuation in
-            Task {
+            let task = Task {
                 do {
                     self.loadSettings()
                     guard !self.baseURL.isEmpty else {
@@ -297,8 +297,16 @@ class OpenAIService: @unchecked Sendable {
 
                     continuation.finish()
                 } catch {
-                    continuation.finish(throwing: error)
+                    if !Task.isCancelled {
+                        continuation.finish(throwing: error)
+                    } else {
+                        continuation.finish()
+                    }
                 }
+            }
+
+            continuation.onTermination = { _ in
+                task.cancel()
             }
         }
     }
@@ -335,7 +343,12 @@ class OpenAIService: @unchecked Sendable {
     }
 
     private func detectVisionSupport(modelId: String) -> Bool {
-        let visionKeywords = ["vision", "gpt-4o", "gpt-4-turbo", "claude-3", "llava", "pixtral", "gemini"]
+        let visionKeywords = [
+            "vision", "gpt-4o", "gpt-4-turbo", "gpt-4.1",
+            "claude-3", "claude-sonnet", "claude-opus", "claude-haiku",
+            "llava", "pixtral", "gemini", "qwen-vl", "qwen2-vl",
+            "minicpm-v", "internvl", "cogvlm"
+        ]
         let lowerId = modelId.lowercased()
         return visionKeywords.contains { lowerId.contains($0) }
     }

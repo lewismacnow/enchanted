@@ -89,18 +89,17 @@ struct Chat: View, Sendable {
         }
     }
     
+    @MainActor
     func newConversation() {
-        DispatchQueue.main.async {
-            withAnimation(.easeOut(duration: 0.3)) {
-                self.conversationStore.selectedConversation = nil
-            }
+        withAnimation(.easeOut(duration: 0.3)) {
+            conversationStore.selectedConversation = nil
         }
-        
+
         Task {
             Haptics.shared.mediumTap()
             try? await languageModelStore.loadModels()
         }
-        
+
 #if os(iOS)
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
 #endif

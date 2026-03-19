@@ -360,6 +360,13 @@ final class ConversationStore: @unchecked Sendable {
 
     @MainActor
     private func handleComplete() {
+        // Flush any remaining buffered content before marking complete
+        if !currentMessageBuffer.isEmpty, let lastMessage = messages.last {
+            lastMessage.content.append(currentMessageBuffer)
+            trackThinkingDuration(for: lastMessage)
+            currentMessageBuffer = ""
+        }
+
         guard let lastMessage = messages.last else { return }
         lastMessage.error = false
         lastMessage.done = true

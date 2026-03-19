@@ -45,13 +45,22 @@ final class LanguageModelSD: Identifiable {
     // MARK: - Capability Detection
 
     static func detectThinkingSupport(modelName: String) -> Bool {
-        let keywords = ["think", "reasoning", "r1", "qwq", "deepseek-r1", "o1", "o3", "o4"]
+        let keywords = [
+            "think", "reasoning", "r1", "qwq",
+            "deepseek-r1", "o1", "o3", "o4",
+            "reflection", "cogito"
+        ]
         let lower = modelName.lowercased()
         return keywords.contains { lower.contains($0) }
     }
 
     static func detectVisionSupport(modelName: String) -> Bool {
-        let keywords = ["vision", "gpt-4o", "gpt-4-turbo", "claude-3", "llava", "pixtral", "gemini", "mllama"]
+        let keywords = [
+            "vision", "gpt-4o", "gpt-4-turbo", "gpt-4.1",
+            "claude-3", "claude-sonnet", "claude-opus", "claude-haiku",
+            "llava", "pixtral", "gemini", "mllama",
+            "qwen-vl", "qwen2-vl", "minicpm-v", "internvl", "cogvlm"
+        ]
         let lower = modelName.lowercased()
         return keywords.contains { lower.contains($0) }
     }
@@ -78,13 +87,7 @@ extension LanguageModelSD {
         if imageSupport {
             return true
         }
-        let imageSupportedModels = ["llava"]
-        for modelName in imageSupportedModels {
-            if name.contains(modelName) {
-                return true
-            }
-        }
-        return false
+        return Self.detectVisionSupport(modelName: name)
     }
 
     nonisolated(unsafe) static let sample: [LanguageModelSD] = [

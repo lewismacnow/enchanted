@@ -2,27 +2,43 @@
 //  LocalVectorStore.swift
 //  Re-Enchanted
 //
-//  In-memory vector store using brute-force cosine similarity search.
-//  Thread-safe via Swift actor isolation. Suitable for moderate dataset sizes.
+//  Persistent on-disk vector store using brute-force cosine similarity search.
+//  Data is stored as a JSON file in Application Support for durability across restarts.
 //
 
 import Foundation
 
 /// An entry stored in the local vector store.
-private struct VectorEntry {
+private struct VectorEntry: Codable {
     let embedding: [Float]
     let metadata: [String: String]
 }
 
-/// In-memory brute-force vector store with cosine similarity search.
+/// On-disk brute-force vector store with cosine similarity search.
 actor LocalVectorStore: VectorStore {
 
     private var entries: [String: VectorEntry] = [:]
+    private let storageURL: URL
+    private var isDirty = false
 
-    init() {}
+    init() {
+        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let dir = appSupport.appendingPathComponent("Re-Enchanted", isDirectory: true)
+        if !FileManager.default.fileExists(atPath: dir.path) {
+            try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        }
+        storageURL = dir.appendingPathComponent("dejaview_vectors.json")
+
+        // Load from disk
+        if let data = try? Data(contentsOf: storageURL),
+           let loaded = try? JSONDecoder().decode([String: VectorEntry].self, from: data) {
+            entries = loaded
+        }
+    }
 
     func store(id: String, embedding: [Float], metadata: [String: String]) async throws {
         entries[id] = VectorEntry(embedding: embedding, metadata: metadata)
+        try saveToDisk()
     }
 
     func search(
@@ -33,7 +49,6 @@ actor LocalVectorStore: VectorStore {
         var results: [(id: String, score: Float, metadata: [String: String])] = []
 
         for (id, entry) in entries {
-            // Apply optional filter
             if let filter = filter, !filter(id, entry.metadata) {
                 continue
             }
@@ -42,19 +57,24 @@ actor LocalVectorStore: VectorStore {
             results.append((id: id, score: score, metadata: entry.metadata))
         }
 
-        // Sort by score descending, take top K
         results.sort { $0.score > $1.score }
         return Array(results.prefix(topK))
     }
 
     func delete(id: String) async throws {
         entries.removeValue(forKey: id)
+        try saveToDisk()
+    }
+
+    // MARK: - Persistence
+
+    private func saveToDisk() throws {
+        let data = try JSONEncoder().encode(entries)
+        try data.write(to: storageURL, options: .atomic)
     }
 
     // MARK: - Cosine Similarity
 
-    /// Compute cosine similarity: dot(a, b) / (norm(a) * norm(b)).
-    /// Returns 0.0 if either vector has zero magnitude.
     private func cosineSimilarity(_ a: [Float], _ b: [Float]) -> Float {
         guard a.count == b.count, !a.isEmpty else { return 0.0 }
 
