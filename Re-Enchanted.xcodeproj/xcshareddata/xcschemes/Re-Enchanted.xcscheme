@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1510"
+   LastUpgradeVersion = "1630"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FFEC328C2B24779A003E5C04"
-               BuildableName = "Enchanted.app"
-               BlueprintName = "Enchanted"
-               ReferencedContainer = "container:Enchanted.xcodeproj">
+               BuildableName = "Re-Enchanted.app"
+               BlueprintName = "Re-Enchanted"
+               ReferencedContainer = "container:Re-Enchanted.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -44,9 +44,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FFEC328C2B24779A003E5C04"
-            BuildableName = "Enchanted.app"
-            BlueprintName = "Enchanted"
-            ReferencedContainer = "container:Enchanted.xcodeproj">
+            BuildableName = "Re-Enchanted.app"
+            BlueprintName = "Re-Enchanted"
+            ReferencedContainer = "container:Re-Enchanted.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -71,9 +71,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FFEC328C2B24779A003E5C04"
-            BuildableName = "Enchanted.app"
-            BlueprintName = "Enchanted"
-            ReferencedContainer = "container:Enchanted.xcodeproj">
+            BuildableName = "Re-Enchanted.app"
+            BlueprintName = "Re-Enchanted"
+            ReferencedContainer = "container:Re-Enchanted.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

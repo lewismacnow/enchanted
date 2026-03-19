@@ -3,11 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		01F47C002F1D8FE000357239 /* ProviderSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47BFF2F1D8FDB00357239 /* ProviderSettings.swift */; };
+		01F47C022F1D900100357240 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C012F1D900000357240 /* OpenAIService.swift */; };
+		01F47C042F1D900300357241 /* VisionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C032F1D900200357241 /* VisionService.swift */; };
 		3396E0762BD877D500213816 /* Menus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3396E0752BD877D500213816 /* Menus.swift */; };
 		FF0146CB2B3DA1DF00A2A9F6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0146CA2B3DA1DF00A2A9F6 /* Settings.swift */; };
 		FF0146CD2B3DADCA00A2A9F6 /* HapticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0146CC2B3DADCA00A2A9F6 /* HapticsService.swift */; };
@@ -108,6 +110,8 @@
 
 /* Begin PBXFileReference section */
 		01F47BFF2F1D8FDB00357239 /* ProviderSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderSettings.swift; sourceTree = "<group>"; };
+		01F47C012F1D900000357240 /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
+		01F47C032F1D900200357241 /* VisionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionService.swift; sourceTree = "<group>"; };
 		3396E0752BD877D500213816 /* Menus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menus.swift; sourceTree = "<group>"; };
 		FF0146CA2B3DA1DF00A2A9F6 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		FF0146CC2B3DADCA00A2A9F6 /* HapticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsService.swift; sourceTree = "<group>"; };
@@ -188,7 +192,7 @@
 		FFE21C772B82353A00A69B9C /* SleepTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepTest.swift; sourceTree = "<group>"; };
 		FFE2C8222B9A657A00BD82F3 /* Accessibility.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Accessibility.plist; sourceTree = "<group>"; };
 		FFEB9CA72BA04304004B1F3D /* NotificationMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationMessage.swift; sourceTree = "<group>"; };
-		FFEC328D2B24779A003E5C04 /* Enchanted.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Enchanted.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FFEC328D2B24779A003E5C04 /* Re-Enchanted.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Re-Enchanted.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FFEC32902B24779A003E5C04 /* EnchantedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnchantedApp.swift; sourceTree = "<group>"; };
 		FFEC32962B24779B003E5C04 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FFEC32982B24779B003E5C04 /* Enchanted.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Enchanted.entitlements; sourceTree = "<group>"; };
@@ -447,7 +451,7 @@
 		FFEC328E2B24779A003E5C04 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FFEC328D2B24779A003E5C04 /* Enchanted.app */,
+				FFEC328D2B24779A003E5C04 /* Re-Enchanted.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -527,9 +531,11 @@
 				FF0146CC2B3DADCA00A2A9F6 /* HapticsService.swift */,
 				FF2F03482B796A6500349855 /* HotkeyService.swift */,
 				FF10023D2B24F4900011A4DC /* OllamaService.swift */,
+				01F47C012F1D900000357240 /* OpenAIService.swift */,
 				FF10024F2B25C79F0011A4DC /* SwiftDataService.swift */,
 				FF6B7B122B3EE7AC00E8FEA3 /* Throttler.swift */,
 				FFCF00F02C03209A00590E79 /* SpeechService.swift */,
+				01F47C032F1D900200357241 /* VisionService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -570,9 +576,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		FFEC328C2B24779A003E5C04 /* Enchanted */ = {
+		FFEC328C2B24779A003E5C04 /* Re-Enchanted */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FFEC329E2B24779B003E5C04 /* Build configuration list for PBXNativeTarget "Enchanted" */;
+			buildConfigurationList = FFEC329E2B24779B003E5C04 /* Build configuration list for PBXNativeTarget "Re-Enchanted" */;
 			buildPhases = (
 				FFEC32892B24779A003E5C04 /* Sources */,
 				FFEC328A2B24779A003E5C04 /* Frameworks */,
@@ -582,7 +588,7 @@
 			);
 			dependencies = (
 			);
-			name = Enchanted;
+			name = "Re-Enchanted";
 			packageProductDependencies = (
 				FF1002652B2653EE0011A4DC /* ActivityIndicatorView */,
 				FF464B122B8026DA008E5130 /* Vortex */,
@@ -594,8 +600,8 @@
 				FF0611F02C04A2FB00443B33 /* Splash */,
 				FF79AEB52CE72ECE00EDE10C /* MarkdownUI */,
 			);
-			productName = Enchanted;
-			productReference = FFEC328D2B24779A003E5C04 /* Enchanted.app */;
+			productName = "Re-Enchanted";
+			productReference = FFEC328D2B24779A003E5C04 /* Re-Enchanted.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -605,16 +611,16 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1510;
+				LastSwiftUpdateCheck = 1630;
+				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					FFEC328C2B24779A003E5C04 = {
 						CreatedOnToolsVersion = 15.0.1;
 					};
 				};
 			};
-			buildConfigurationList = FFEC32882B24779A003E5C04 /* Build configuration list for PBXProject "Enchanted" */;
-			compatibilityVersion = "Xcode 14.0";
+			buildConfigurationList = FFEC32882B24779A003E5C04 /* Build configuration list for PBXProject "Re-Enchanted" */;
+			compatibilityVersion = "Xcode 16.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -637,7 +643,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				FFEC328C2B24779A003E5C04 /* Enchanted */,
+				FFEC328C2B24779A003E5C04 /* Re-Enchanted */,
 			);
 		};
 /* End PBXProject section */
@@ -730,6 +736,8 @@
 				FF10026D2B2751760011A4DC /* SettingsView.swift in Sources */,
 				FF33066C2B83BB31007B33E5 /* SidebarButton.swift in Sources */,
 				01F47C002F1D8FE000357239 /* ProviderSettings.swift in Sources */,
+				01F47C022F1D900100357240 /* OpenAIService.swift in Sources */,
+				01F47C042F1D900300357241 /* VisionService.swift in Sources */,
 				FFD57E322BF291B2003FEFF1 /* CodeBlockView.swift in Sources */,
 				FF1002542B261D460011A4DC /* MessageListVIew.swift in Sources */,
 				FF10024E2B25C2A70011A4DC /* ConversationSD.swift in Sources */,
@@ -877,7 +885,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 51;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Enchanted/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -886,7 +894,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Enchanted/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Enchanted by Freysa";
+				INFOPLIST_KEY_CFBundleDisplayName = "Re-Enchanted";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Audio is recorded to transcribe text. Recording is discarded after transcription.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "You can view a text transcription of your meeting in the app.";
@@ -904,8 +912,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.8.1;
-				PRODUCT_BUNDLE_IDENTIFIER = subj.Enchanted;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.itomlab.re-enchanted";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
@@ -930,7 +938,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 51;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Enchanted/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -939,7 +947,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Enchanted/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Enchanted by Freysa";
+				INFOPLIST_KEY_CFBundleDisplayName = "Re-Enchanted";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Audio is recorded to transcribe text. Recording is discarded after transcription.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "You can view a text transcription of your meeting in the app.";
@@ -957,8 +965,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.8.1;
-				PRODUCT_BUNDLE_IDENTIFIER = subj.Enchanted;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.itomlab.re-enchanted";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
@@ -985,7 +993,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FFEC329E2B24779B003E5C04 /* Build configuration list for PBXNativeTarget "Enchanted" */ = {
+		FFEC329E2B24779B003E5C04 /* Build configuration list for PBXNativeTarget "Re-Enchanted" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FFEC329F2B24779B003E5C04 /* Debug */,
@@ -1007,10 +1015,10 @@
 		};
 		FF0611EF2C04A2FB00443B33 /* XCRemoteSwiftPackageReference "Splash" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/AugustDev/Splash";
+			repositoryURL = "https://github.com/JohnSundell/Splash";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.16.0;
 			};
 		};
 		FF1002642B2653EE0011A4DC /* XCRemoteSwiftPackageReference "ActivityIndicatorView" */ = {
@@ -1018,7 +1026,7 @@
 			repositoryURL = "https://github.com/exyte/ActivityIndicatorView.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.1;
+				minimumVersion = 1.2.0;
 			};
 		};
 		FF464B112B8026DA008E5130 /* XCRemoteSwiftPackageReference "Vortex" */ = {
@@ -1047,10 +1055,10 @@
 		};
 		FF911DEF2B98F08800915E94 /* XCRemoteSwiftPackageReference "WrappingHStack" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ksemianov/WrappingHStack";
+			repositoryURL = "https://github.com/dkk/WrappingHStack";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.2.0;
+				minimumVersion = 2.0.0;
 			};
 		};
 		FFD5FAD32B8130CE0055AB51 /* XCRemoteSwiftPackageReference "OllamaKit" */ = {

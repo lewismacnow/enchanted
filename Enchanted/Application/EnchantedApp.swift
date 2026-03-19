@@ -1,8 +1,9 @@
 //
 //  EnchantedApp.swift
-//  Enchanted
+//  Re-Enchanted
 //
-//  Created by Augustinas Malinauskas on 09/12/2023.
+//  Originally created by Augustinas Malinauskas on 09/12/2023.
+//  Forked and maintained by iTomLab (itomlab.co.uk)
 //
 
 import SwiftUI
@@ -16,7 +17,7 @@ extension KeyboardShortcuts.Name {
 #endif
 
 @main
-struct EnchantedApp: App {
+struct ReEnchantedApp: App {
     @State private var appStore = AppStore.shared
 #if os(macOS)
     @NSApplicationDelegateAdaptor(PanelManager.self) var panelManager

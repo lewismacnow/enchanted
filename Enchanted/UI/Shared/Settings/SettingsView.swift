@@ -1,8 +1,9 @@
 //
 //  SettingsView.swift
-//  Enchanted
+//  Re-Enchanted
 //
-//  Created by Augustinas Malinauskas on 11/12/2023.
+//  Originally created by Augustinas Malinauskas on 11/12/2023.
+//  Forked and maintained by iTomLab (itomlab.co.uk)
 //
 
 import SwiftUI
@@ -12,17 +13,13 @@ import Combine
 
 struct SettingsView: View {
     @Environment(\.presentationMode) var presentationMode
-    @Binding var ollamaUri: String
     @Binding var systemPrompt: String
     @Binding var vibrations: Bool
     @Binding var colorScheme: AppColorScheme
     @Binding var defaultOllamModel: String
-    @Binding var ollamaBearerToken: String
     @Binding var appUserInitials: String
     @Binding var pingInterval: String
     @Binding var voiceIdentifier: String
-    @Binding var openAIUri: String
-    @Binding var openAIKey: String
     @State var ollamaStatus: Bool?
     var save: () -> ()
     var checkServer: () -> ()
@@ -30,9 +27,9 @@ struct SettingsView: View {
     var ollamaLangugeModels: [LanguageModelSD]
     var voices: [AVSpeechSynthesisVoice]
     @State private var appStore = AppStore.shared
-    
+
     @State private var deleteConversationsDialog = false
-    
+
     var body: some View {
         VStack {
             ZStack {
@@ -44,17 +41,16 @@ struct SettingsView: View {
                             .font(.system(size: 16))
                             .foregroundStyle(Color(.label))
                     }
-                    
-                    
+
                     Spacer()
-                    
+
                     Button(action: save) {
                         Text("Save")
                             .font(.system(size: 16))
                             .foregroundStyle(Color(.label))
                     }
                 }
-                
+
                 HStack {
                     Spacer()
                     Text("Settings")
@@ -65,12 +61,11 @@ struct SettingsView: View {
                 }
             }
             .padding()
-            
+
             Form {
                 Section(header: Text("Provider").font(.headline)) {
-                    // Fix: Use ProviderSettings.ProviderType explicitly
                     Picker(selection: $appStore.providerSettings.provider) {
-                        ForEach(ProviderSettings.ProviderType.allCases, id:\.self) { provider in
+                        ForEach(ProviderSettings.ProviderType.allCases, id: \.self) { provider in
                             Text(provider.rawValue).tag(provider)
                         }
                     } label: {
@@ -78,19 +73,53 @@ struct SettingsView: View {
                             .foregroundStyle(Color.label)
                     }
                 }
-                
-                Section(header: Text("Ollama").font(.headline)) {
-                    
-                    TextField("Ollama server URI", text: $ollamaUri, onCommit: checkServer)
-                        .textContentType(.URL)
-                        .disableAutocorrection(true)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                if appStore.providerSettings.provider == .ollama {
+                    Section(header: Text("Ollama").font(.headline)) {
+                        TextField("Ollama server URI", text: $appStore.providerSettings.ollamaUri, onCommit: checkServer)
+                            .textContentType(.URL)
+                            .disableAutocorrection(true)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
 #if !os(macOS)
-                        .padding(.top, 8)
-                        .keyboardType(.URL)
-                        .autocapitalization(.none)
+                            .padding(.top, 8)
+                            .keyboardType(.URL)
+                            .autocapitalization(.none)
 #endif
-                    
+
+                        TextField("Bearer Token", text: $appStore.providerSettings.ollamaBearerToken)
+                            .disableAutocorrection(true)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+#if os(iOS)
+                            .autocapitalization(.none)
+#endif
+                    }
+                }
+
+                if appStore.providerSettings.provider == .openai {
+                    Section(header: Text("OpenAI Compatible").font(.headline)) {
+                        TextField("API Endpoint URL", text: $appStore.providerSettings.openAIUri, onCommit: checkServer)
+                            .textContentType(.URL)
+                            .disableAutocorrection(true)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+#if !os(macOS)
+                            .keyboardType(.URL)
+                            .autocapitalization(.none)
+#endif
+
+                        SecureField("API Key (optional)", text: $appStore.providerSettings.openAIKey)
+                            .disableAutocorrection(true)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+#if os(iOS)
+                            .autocapitalization(.none)
+#endif
+
+                        Text("Works with any OpenAI-compatible endpoint: OpenAI, LM Studio, Ollama /v1, vLLM, etc.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                Section(header: Text("Chat").font(.headline)) {
                     VStack(alignment: .leading) {
                         Text("System prompt")
                         TextEditor(text: $systemPrompt)
@@ -99,84 +128,52 @@ struct SettingsView: View {
                             .multilineTextAlignment(.leading)
                             .frame(minHeight: 100)
                     }
-                    
+
                     Picker(selection: $defaultOllamModel) {
-                        ForEach(ollamaLangugeModels, id:\.self) { model in
+                        ForEach(ollamaLangugeModels, id: \.self) { model in
                             Text(model.name).tag(model.name)
                         }
                     } label: {
-                        Label {
-                            Text("Default Model")
-                        } icon: {
-                            Image("ollama")
-                                .renderingMode(.template)
-                                .resizable()
-                                .scaledToFit()
-                                .foregroundColor(Color(.label))
-                                .frame(width: 24, height: 24)
-                        }
+                        Label("Default Model", systemImage: "cpu")
+                            .foregroundStyle(Color.label)
                     }
-                    
-                    
-                    TextField("Bearer Token", text: $ollamaBearerToken)
-                        .disableAutocorrection(true)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-#if os(iOS)
-                        .autocapitalization(.none)
-#endif
+
                     TextField("Ping Interval (seconds)", text: $pingInterval)
                         .disableAutocorrection(true)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                    
-                    Section(header: Text("OpenAI").font(.headline)) {
-                        TextField("OpenAI server URI", text: $openAIUri)
-                            .textContentType(.URL)
-                            .disableAutocorrection(true)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-#if !os(macOS)
-                            .keyboardType(.URL)
-                            .autocapitalization(.none)
-#endif
-                        
-                        TextField("API Key", text: $openAIKey)
-                            .disableAutocorrection(true)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                    }
-                    
-                    Section(header: Text("APP").font(.headline).padding(.top, 20)) {
-                        
+                }
+
+                Section(header: Text("App").font(.headline)) {
 #if os(iOS)
-                        Toggle(isOn: $vibrations, label: {
-                            Label("Vibrations", systemImage: "water.waves")
-                                .foregroundStyle(Color.label)
-                        })
+                    Toggle(isOn: $vibrations, label: {
+                        Label("Vibrations", systemImage: "water.waves")
+                            .foregroundStyle(Color.label)
+                    })
 #endif
-                    }
-                    
-                    
+
                     Picker(selection: $colorScheme) {
-                        ForEach(AppColorScheme.allCases, id:\.self) { scheme in
+                        ForEach(AppColorScheme.allCases, id: \.self) { scheme in
                             Text(scheme.toString).tag(scheme.id)
                         }
                     } label: {
                         Label("Appearance", systemImage: "sun.max")
                             .foregroundStyle(Color.label)
                     }
-                    
+
                     Picker(selection: $voiceIdentifier) {
-                        ForEach(voices, id:\.self.identifier) { voice in
+                        ForEach(voices, id: \.self.identifier) { voice in
                             Text(voice.prettyName).tag(voice.identifier)
                         }
                     } label: {
                         Label("Voice", systemImage: "waveform")
                             .foregroundStyle(Color.label)
-                        
+
 #if os(macOS)
                         Text("Download voices by going to Settings > Accessibility > Spoken Content > System Voice > Manage Voices.")
 #else
                         Text("Download voices by going to Settings > Accessibility > Spoken Content > Voices.")
 #endif
-                        
+
                         Button(action: {
 #if os(macOS)
                             if let url = URL(string: "x-apple.systempreferences:com.apple.preference.universalaccess?SpeakableItems") {
@@ -188,15 +185,12 @@ struct SettingsView: View {
                                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
                             }
 #endif
-                            
                         }) {
-                            
                             Text("Open Settings")
                         }
                         .buttonStyle(PlainButtonStyle())
                     }
-                    
-                    
+
                     TextField("Initials", text: $appUserInitials)
                         .disableAutocorrection(true)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -204,15 +198,13 @@ struct SettingsView: View {
                         .keyboardType(.URL)
                         .autocapitalization(.none)
 #endif
-                    
-                    Button(action: {deleteConversationsDialog.toggle()}) {
+
+                    Button(action: { deleteConversationsDialog.toggle() }) {
                         HStack {
                             Spacer()
-                            
                             Text("Clear All Data")
                                 .foregroundStyle(Color(.systemRed))
                                 .padding(.vertical, 6)
-                            
                             Spacer()
                         }
                     }
@@ -232,17 +224,13 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView(
-        ollamaUri: .constant(""),
-        systemPrompt: .constant("You are an intelligent assistant solving complex problems. You are an intelligent assistant solving complex problems. You are an intelligent assistant solving complex problems."),
+        systemPrompt: .constant("You are an intelligent assistant solving complex problems."),
         vibrations: .constant(true),
         colorScheme: .constant(.light),
         defaultOllamModel: .constant("llama2"),
-        ollamaBearerToken: .constant("x"),
         appUserInitials: .constant("AM"),
         pingInterval: .constant("5"),
         voiceIdentifier: .constant("sample"),
-        openAIUri: .constant("http://localhost:11434/v1"),
-        openAIKey: .constant("not-needed"),
         save: {},
         checkServer: {},
         deleteAll: {},
