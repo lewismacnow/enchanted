@@ -51,8 +51,23 @@ extension SwiftDataService {
     }
 
     func saveModels(models: [LanguageModelSD]) throws {
+        // Fetch existing models to preserve user-set properties (isHidden)
+        let existing = try fetchModels()
+        let existingByName = Dictionary(uniqueKeysWithValues: existing.map { ($0.name, $0) })
+
         for model in models {
-            modelContext.insert(model)
+            if let existingModel = existingByName[model.name] {
+                // Update API-derived properties, preserve user-set properties
+                existingModel.imageSupport = model.imageSupport
+                existingModel.supportsThinking = model.supportsThinking
+                existingModel.modelProvider = model.modelProvider
+                existingModel.isAvailable = true
+                // isHidden is NOT overwritten — preserved from existing record
+            } else {
+                // New model, insert fresh
+                model.isAvailable = true
+                modelContext.insert(model)
+            }
         }
         try modelContext.saveChanges()
     }
@@ -112,8 +127,12 @@ extension SwiftDataService {
     }
 
     func deleteConversations(_ date: Date) throws {
-        let predicate = #Predicate<ConversationSD> { $0.createdAt >= date && $0.createdAt <= date }
+        let calendar = Calendar.current
+        let dayStart = calendar.startOfDay(for: date)
+        let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) ?? date
+        let predicate = #Predicate<ConversationSD> { $0.createdAt >= dayStart && $0.createdAt < dayEnd }
         try modelContext.delete(model: ConversationSD.self, where: predicate)
+        try modelContext.saveChanges()
     }
 }
 

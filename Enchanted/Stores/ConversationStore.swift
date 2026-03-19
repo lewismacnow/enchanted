@@ -58,7 +58,7 @@ final class ConversationStore: @unchecked Sendable {
                 self.selectedConversation = nil
                 self.messages = []
             }
-            try? await swiftDataService.deleteConversations()
+            try? await swiftDataService.deleteConversations(date)
             try? await loadConversations()
         }
     }

@@ -12,6 +12,7 @@ struct DejaViewSettingsView: View {
 
     @State private var connectionURL = ""
     @State private var visionModel: String = UserDefaults.standard.string(forKey: "dejaViewVisionModel") ?? ""
+    @State private var embeddingModel: String = UserDefaults.standard.string(forKey: "dejaViewEmbeddingModel") ?? ""
 
     private let intervalOptions: [(label: String, value: TimeInterval)] = [
         ("10 seconds", 10),
@@ -105,10 +106,36 @@ struct DejaViewSettingsView: View {
                             .onChange(of: visionModel) { _, newValue in
                                 UserDefaults.standard.set(newValue, forKey: "dejaViewVisionModel")
                             }
-                        Text("e.g. \"llava:latest\" or \"gpt-4o\". When set, screenshots are described by this vision model for better search. Leave empty to skip.")
+                        Text("e.g. \"llava:latest\" or \"gpt-4o\". When set, screenshots are described by this vision model for richer search. Leave empty to use OCR text only.")
                             .font(.caption)
                             .foregroundStyle(.tertiary)
                     }
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        TextField("Embedding Model (optional)", text: $embeddingModel)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .onChange(of: embeddingModel) { _, newValue in
+                                UserDefaults.standard.set(newValue, forKey: "dejaViewEmbeddingModel")
+                            }
+                        Text("Text embedding model for vector search. Default: \"\(EmbeddingService.defaultOllamaModel)\" (Ollama) or \"\(EmbeddingService.defaultOpenAIModel)\" (OpenAI). Changing this requires re-indexing existing captures.")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+
+                Section(header: Text("Pipeline").font(.subheadline)) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Label("1. OCR extracts text from screenshots (Apple Vision, built-in)", systemImage: "doc.text.viewfinder")
+                            .font(.caption)
+                        Label("2. Vision model describes visual content (optional, slower)", systemImage: "eye")
+                            .font(.caption)
+                        Label("3. Text embedding model creates vectors for search", systemImage: "arrow.triangle.branch")
+                            .font(.caption)
+                        Label("4. Vectors stored in selected backend for similarity search", systemImage: "cylinder")
+                            .font(.caption)
+                    }
+                    .foregroundStyle(.secondary)
+                    .padding(.vertical, 4)
                 }
 
                 // MARK: - Vector Store Section

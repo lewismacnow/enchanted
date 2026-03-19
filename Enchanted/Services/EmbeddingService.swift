@@ -3,7 +3,10 @@
 //  Re-Enchanted
 //
 //  Generates text embeddings via Ollama or OpenAI-compatible endpoints.
-//  Used by DejaView to create vector representations of OCR text.
+//  Used by DejaView to create vector representations of OCR text + vision descriptions.
+//
+//  Pipeline: Screenshot → OCR (Apple Vision) + Vision LLM description → Text embedding → Vector store
+//  All embedding models are text-only. Images must be converted to text first.
 //
 
 import Foundation
@@ -44,6 +47,10 @@ struct EmbeddingError: Error, LocalizedError {
 class EmbeddingService: @unchecked Sendable {
     static let shared = EmbeddingService()
 
+    /// Default embedding models per provider
+    static let defaultOllamaModel = "nomic-embed-text"
+    static let defaultOpenAIModel = "text-embedding-3-small"
+
     private let session: URLSession
 
     private init() {
@@ -53,7 +60,6 @@ class EmbeddingService: @unchecked Sendable {
         session = URLSession(configuration: config)
     }
 
-    /// Load current provider settings from UserDefaults.
     private func loadSettings() -> ProviderSettings {
         if let data = UserDefaults.standard.data(forKey: "providerSettings"),
            let settings = try? JSONDecoder().decode(ProviderSettings.self, from: data) {
@@ -62,8 +68,17 @@ class EmbeddingService: @unchecked Sendable {
         return ProviderSettings()
     }
 
+    /// The user-configured embedding model name, or the default for the active provider.
+    private func embeddingModelName(settings: ProviderSettings) -> String {
+        let custom = UserDefaults.standard.string(forKey: "dejaViewEmbeddingModel") ?? ""
+        if !custom.isEmpty { return custom }
+        switch settings.provider {
+        case .ollama: return Self.defaultOllamaModel
+        case .openai: return Self.defaultOpenAIModel
+        }
+    }
+
     /// Generate an embedding vector for the given text.
-    /// Routes to the appropriate backend based on current ProviderSettings.
     func embed(text: String) async throws -> [Float] {
         let settings = loadSettings()
 
@@ -85,7 +100,8 @@ class EmbeddingService: @unchecked Sendable {
             throw EmbeddingError(message: "Invalid Ollama URL: \(urlString)")
         }
 
-        let body = OllamaEmbeddingRequest(model: "nomic-embed-text", prompt: text)
+        let model = embeddingModelName(settings: settings)
+        let body = OllamaEmbeddingRequest(model: model, prompt: text)
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -102,7 +118,7 @@ class EmbeddingService: @unchecked Sendable {
         }
         guard httpResponse.statusCode == 200 else {
             let errorBody = String(data: data, encoding: .utf8) ?? "Unknown error"
-            throw EmbeddingError(message: "Ollama embedding HTTP \(httpResponse.statusCode): \(errorBody)")
+            throw EmbeddingError(message: "Embedding failed (model: \(model)). HTTP \(httpResponse.statusCode): \(errorBody). Make sure '\(model)' is pulled in Ollama.")
         }
 
         let decoded = try JSONDecoder().decode(OllamaEmbeddingResponse.self, from: data)
@@ -123,7 +139,8 @@ class EmbeddingService: @unchecked Sendable {
             throw EmbeddingError(message: "Invalid OpenAI URL: \(urlString)")
         }
 
-        let body = OpenAIEmbeddingRequest(model: "text-embedding-3-small", input: text)
+        let model = embeddingModelName(settings: settings)
+        let body = OpenAIEmbeddingRequest(model: model, input: text)
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -140,7 +157,7 @@ class EmbeddingService: @unchecked Sendable {
         }
         guard httpResponse.statusCode == 200 else {
             let errorBody = String(data: data, encoding: .utf8) ?? "Unknown error"
-            throw EmbeddingError(message: "OpenAI embedding HTTP \(httpResponse.statusCode): \(errorBody)")
+            throw EmbeddingError(message: "Embedding failed (model: \(model)). HTTP \(httpResponse.statusCode): \(errorBody)")
         }
 
         let decoded = try JSONDecoder().decode(OpenAIEmbeddingResponse.self, from: data)
