@@ -22,6 +22,19 @@
 		02C10007300000000000C007 /* MCPStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C10008300000000000C008 /* MCPStore.swift */; };
 		02C10009300000000000C009 /* MCPSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C1000A300000000000C00A /* MCPSettingsView.swift */; };
 		02C1000B300000000000C00B /* ToolCallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C1000C300000000000C00C /* ToolCallView.swift */; };
+		02D10001300000000000D001 /* ScreenCaptureSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D10002300000000000D002 /* ScreenCaptureSD.swift */; };
+		02D10003300000000000D003 /* EmbeddingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D10004300000000000D004 /* EmbeddingService.swift */; };
+		02D10005300000000000D005 /* ScreenCaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D10006300000000000D006 /* ScreenCaptureService.swift */; };
+		02D10007300000000000D007 /* DateParsingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D10008300000000000D008 /* DateParsingService.swift */; };
+		02D10009300000000000D009 /* VectorStoreProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D1000A300000000000D00A /* VectorStoreProtocol.swift */; };
+		02D1000B300000000000D00B /* LocalVectorStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D1000C300000000000D00C /* LocalVectorStore.swift */; };
+		02D1000D300000000000D00D /* PgVectorStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D1000E300000000000D00E /* PgVectorStore.swift */; };
+		02D1000F300000000000D00F /* ChromaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D10010300000000000D010 /* ChromaStore.swift */; };
+		02D10011300000000000D011 /* QdrantStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D10012300000000000D012 /* QdrantStore.swift */; };
+		02D10013300000000000D013 /* DejaViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D10014300000000000D014 /* DejaViewStore.swift */; };
+		02D10015300000000000D015 /* DejaViewSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D10016300000000000D016 /* DejaViewSearchView.swift */; };
+		02D10017300000000000D017 /* DejaViewSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D10018300000000000D018 /* DejaViewSettingsView.swift */; };
+		02D10019300000000000D019 /* ScreenCaptureResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D1001A300000000000D01A /* ScreenCaptureResultView.swift */; };
 		3396E0762BD877D500213816 /* Menus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3396E0752BD877D500213816 /* Menus.swift */; };
 		FF0146CB2B3DA1DF00A2A9F6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0146CA2B3DA1DF00A2A9F6 /* Settings.swift */; };
 		FF0146CD2B3DADCA00A2A9F6 /* HapticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0146CC2B3DADCA00A2A9F6 /* HapticsService.swift */; };
@@ -136,6 +149,19 @@
 		02C10008300000000000C008 /* MCPStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCPStore.swift; sourceTree = "<group>"; };
 		02C1000A300000000000C00A /* MCPSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCPSettingsView.swift; sourceTree = "<group>"; };
 		02C1000C300000000000C00C /* ToolCallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolCallView.swift; sourceTree = "<group>"; };
+		02D10002300000000000D002 /* ScreenCaptureSD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenCaptureSD.swift; sourceTree = "<group>"; };
+		02D10004300000000000D004 /* EmbeddingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmbeddingService.swift; sourceTree = "<group>"; };
+		02D10006300000000000D006 /* ScreenCaptureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenCaptureService.swift; sourceTree = "<group>"; };
+		02D10008300000000000D008 /* DateParsingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateParsingService.swift; sourceTree = "<group>"; };
+		02D1000A300000000000D00A /* VectorStoreProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorStoreProtocol.swift; sourceTree = "<group>"; };
+		02D1000C300000000000D00C /* LocalVectorStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalVectorStore.swift; sourceTree = "<group>"; };
+		02D1000E300000000000D00E /* PgVectorStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PgVectorStore.swift; sourceTree = "<group>"; };
+		02D10010300000000000D010 /* ChromaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromaStore.swift; sourceTree = "<group>"; };
+		02D10012300000000000D012 /* QdrantStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QdrantStore.swift; sourceTree = "<group>"; };
+		02D10014300000000000D014 /* DejaViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DejaViewStore.swift; sourceTree = "<group>"; };
+		02D10016300000000000D016 /* DejaViewSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DejaViewSearchView.swift; sourceTree = "<group>"; };
+		02D10018300000000000D018 /* DejaViewSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DejaViewSettingsView.swift; sourceTree = "<group>"; };
+		02D1001A300000000000D01A /* ScreenCaptureResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenCaptureResultView.swift; sourceTree = "<group>"; };
 		3396E0752BD877D500213816 /* Menus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menus.swift; sourceTree = "<group>"; };
 		FF0146CA2B3DA1DF00A2A9F6 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		FF0146CC2B3DADCA00A2A9F6 /* HapticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsService.swift; sourceTree = "<group>"; };
@@ -283,6 +309,7 @@
 				FFFD00C12B92607800392AE6 /* CompletionsStore.swift */,
 				FF1002432B25BB730011A4DC /* ConversationStore.swift */,
 				FF1002452B25BCE70011A4DC /* LanguageModelStore.swift */,
+				02D10014300000000000D014 /* DejaViewStore.swift */,
 				02C10008300000000000C008 /* MCPStore.swift */,
 				02B10004300000000000B004 /* PersonaStore.swift */,
 			);
@@ -297,6 +324,7 @@
 				FF1002492B25BE740011A4DC /* LanguageModelSD.swift */,
 				FF10024B2B25BEA00011A4DC /* MessageSD.swift */,
 				02B10002300000000000B002 /* PersonaSD.swift */,
+				02D10002300000000000D002 /* ScreenCaptureSD.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -570,8 +598,24 @@
 				FF6B7B122B3EE7AC00E8FEA3 /* Throttler.swift */,
 				FFCF00F02C03209A00590E79 /* SpeechService.swift */,
 				01F47C032F1D900200357241 /* VisionService.swift */,
+				02D10004300000000000D004 /* EmbeddingService.swift */,
+				02D10006300000000000D006 /* ScreenCaptureService.swift */,
+				02D10008300000000000D008 /* DateParsingService.swift */,
+				02D20002300000000000E002 /* VectorStore */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		02D20002300000000000E002 /* VectorStore */ = {
+			isa = PBXGroup;
+			children = (
+				02D1000A300000000000D00A /* VectorStoreProtocol.swift */,
+				02D1000C300000000000D00C /* LocalVectorStore.swift */,
+				02D1000E300000000000D00E /* PgVectorStore.swift */,
+				02D10010300000000000D010 /* ChromaStore.swift */,
+				02D10012300000000000D012 /* QdrantStore.swift */,
+			);
+			path = VectorStore;
 			sourceTree = "<group>";
 		};
 		FFEC32A52B247879003E5C04 /* UI */ = {
@@ -585,12 +629,23 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
+		02D20001300000000000E001 /* DejaView */ = {
+			isa = PBXGroup;
+			children = (
+				02D10016300000000000D016 /* DejaViewSearchView.swift */,
+				02D10018300000000000D018 /* DejaViewSettingsView.swift */,
+				02D1001A300000000000D01A /* ScreenCaptureResultView.swift */,
+			);
+			path = DejaView;
+			sourceTree = "<group>";
+		};
 		FFEC32A72B247896003E5C04 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
 				FF38F8522B7AA9C400546B56 /* ApplicationEntry.swift */,
 				FFEC32A82B24795A003E5C04 /* Chat */,
 				FF15EF682B826BF400D4A541 /* Components */,
+				02D20001300000000000E001 /* DejaView */,
 				FFB56F442C0383A60020AFFD /* Voice */,
 				FF10026B2B2751630011A4DC /* Settings */,
 				FF1002552B2624790011A4DC /* Sidebar */,
@@ -779,6 +834,19 @@
 				02C10007300000000000C007 /* MCPStore.swift in Sources */,
 				02C10009300000000000C009 /* MCPSettingsView.swift in Sources */,
 				02C1000B300000000000C00B /* ToolCallView.swift in Sources */,
+				02D10001300000000000D001 /* ScreenCaptureSD.swift in Sources */,
+				02D10003300000000000D003 /* EmbeddingService.swift in Sources */,
+				02D10005300000000000D005 /* ScreenCaptureService.swift in Sources */,
+				02D10007300000000000D007 /* DateParsingService.swift in Sources */,
+				02D10009300000000000D009 /* VectorStoreProtocol.swift in Sources */,
+				02D1000B300000000000D00B /* LocalVectorStore.swift in Sources */,
+				02D1000D300000000000D00D /* PgVectorStore.swift in Sources */,
+				02D1000F300000000000D00F /* ChromaStore.swift in Sources */,
+				02D10011300000000000D011 /* QdrantStore.swift in Sources */,
+				02D10013300000000000D013 /* DejaViewStore.swift in Sources */,
+				02D10015300000000000D015 /* DejaViewSearchView.swift in Sources */,
+				02D10017300000000000D017 /* DejaViewSettingsView.swift in Sources */,
+				02D10019300000000000D019 /* ScreenCaptureResultView.swift in Sources */,
 				FFD57E322BF291B2003FEFF1 /* CodeBlockView.swift in Sources */,
 				FF1002542B261D460011A4DC /* MessageListVIew.swift in Sources */,
 				FF10024E2B25C2A70011A4DC /* ConversationSD.swift in Sources */,

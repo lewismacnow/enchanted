@@ -23,7 +23,8 @@ final actor SwiftDataService: ModelActor {
                 ConversationSD.self,
                 MessageSD.self,
                 CompletionInstructionSD.self,
-                PersonaSD.self
+                PersonaSD.self,
+                ScreenCaptureSD.self
             ])
             let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -175,6 +176,25 @@ extension SwiftDataService {
 
     func deletePersona(_ persona: PersonaSD) throws {
         modelContext.delete(persona)
+        try modelContext.saveChanges()
+    }
+}
+
+// MARK: - Screen Captures
+extension SwiftDataService {
+    func fetchScreenCaptures() throws -> [ScreenCaptureSD] {
+        let sortDescriptor = SortDescriptor(\ScreenCaptureSD.timestamp, order: .reverse)
+        let fetchDescriptor = FetchDescriptor<ScreenCaptureSD>(sortBy: [sortDescriptor])
+        return try modelContext.fetch(fetchDescriptor)
+    }
+
+    func createScreenCapture(_ capture: ScreenCaptureSD) throws {
+        modelContext.insert(capture)
+        try modelContext.saveChanges()
+    }
+
+    func deleteScreenCapture(_ capture: ScreenCaptureSD) throws {
+        modelContext.delete(capture)
         try modelContext.saveChanges()
     }
 }

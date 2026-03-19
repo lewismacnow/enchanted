@@ -136,6 +136,11 @@ struct SettingsView: View {
                 }
 #endif
 
+                Section(header: Text("DejaView").font(.headline)) {
+                    DejaViewSettingsView()
+                        .frame(minHeight: 150)
+                }
+
                 Section(header: Text("Chat").font(.headline)) {
                     VStack(alignment: .leading) {
                         Text("System prompt")
