@@ -42,9 +42,16 @@ struct PromptPanel: View {
     
     @MainActor
     func completionInApp(_ completion: CompletionInstructionSD) {
-        guard languageModelStore.selectedModel != nil else { return }
+        guard let model = languageModelStore.selectedModel else { return }
         let prompt = CompletionsPanelVM.constructPrompt(completion: completion, selectedText: completionsPanelVM.selectedText ?? "")
-        sendMessage(prompt: prompt, image: nil)
+
+        // Capture screenshot for vision-capable models
+        var image: Image? = nil
+        if model.supportsImages {
+            image = completionsPanelVM.captureScreenForVision()
+        }
+
+        sendMessage(prompt: prompt, image: image)
         appStore.uiLog(message: "In App Completion - **\(completion.name)**", status: .info)
     }
     

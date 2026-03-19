@@ -41,6 +41,16 @@ final class DejaViewStore: @unchecked Sendable {
         }
     }
 
+    @MainActor var retentionDays: Int = {
+        let saved = UserDefaults.standard.integer(forKey: "dejaViewRetentionDays")
+        // 0 means "forever"; if never set, default to 30
+        return saved == 0 && UserDefaults.standard.object(forKey: "dejaViewRetentionDays") == nil ? 30 : saved
+    }() {
+        didSet {
+            UserDefaults.standard.set(retentionDays, forKey: "dejaViewRetentionDays")
+        }
+    }
+
     init(swiftDataService: SwiftDataService) {
         self.swiftDataService = swiftDataService
         self.vectorStore = LocalVectorStore()
@@ -56,6 +66,42 @@ final class DejaViewStore: @unchecked Sendable {
             }
         } catch {
             print("Failed to load captures: \(error)")
+        }
+    }
+
+    // MARK: - Purge Old Captures
+
+    /// Delete captures older than the configured retention period.
+    /// A retentionDays value of 0 means "keep forever" and skips purging.
+    func purgeOldCaptures() async {
+        let days: Int = await MainActor.run { self.retentionDays }
+        guard days > 0 else { return }
+
+        let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
+
+        do {
+            nonisolated(unsafe) let allCaptures = try await swiftDataService.fetchScreenCaptures()
+            let expired = allCaptures.filter { $0.timestamp < cutoff }
+
+            for capture in expired {
+                // Remove screenshot file from disk
+                let filePath = capture.imagePath
+                if FileManager.default.fileExists(atPath: filePath) {
+                    try? FileManager.default.removeItem(atPath: filePath)
+                }
+
+                // Remove from vector store
+                try? await vectorStore.delete(id: capture.id.uuidString)
+
+                // Remove from SwiftData
+                try? await swiftDataService.deleteScreenCapture(capture)
+            }
+
+            if !expired.isEmpty {
+                print("Purged \(expired.count) captures older than \(days) days")
+            }
+        } catch {
+            print("Failed to purge old captures: \(error)")
         }
     }
 
@@ -82,26 +128,33 @@ final class DejaViewStore: @unchecked Sendable {
     }
 
     private func performCapture() async {
+        // Purge old captures once per capture cycle
+        await purgeOldCaptures()
+
         do {
-            let result = try await ScreenCaptureService.shared.captureAndProcess()
-            let capture = ScreenCaptureSD(
-                timestamp: Date(),
-                imagePath: result.imagePath,
-                extractedText: result.extractedText,
-                embeddingData: ScreenCaptureSD.serializeEmbedding(result.embedding)
-            )
+            let results = try await ScreenCaptureService.shared.captureAndProcess()
 
-            try await swiftDataService.createScreenCapture(capture)
-
-            if !result.embedding.isEmpty {
-                try await vectorStore.store(
-                    id: capture.id.uuidString,
-                    embedding: result.embedding,
-                    metadata: [
-                        "timestamp": ISO8601DateFormatter().string(from: capture.timestamp),
-                        "imagePath": capture.imagePath
-                    ]
+            for result in results {
+                let capture = ScreenCaptureSD(
+                    timestamp: Date(),
+                    imagePath: result.imagePath,
+                    extractedText: result.extractedText,
+                    embeddingData: ScreenCaptureSD.serializeEmbedding(result.embedding)
                 )
+
+                try await swiftDataService.createScreenCapture(capture)
+
+                if !result.embedding.isEmpty {
+                    try await vectorStore.store(
+                        id: capture.id.uuidString,
+                        embedding: result.embedding,
+                        metadata: [
+                            "timestamp": ISO8601DateFormatter().string(from: capture.timestamp),
+                            "imagePath": capture.imagePath,
+                            "visionDescription": result.visionDescription
+                        ]
+                    )
+                }
             }
 
             await loadCaptures()

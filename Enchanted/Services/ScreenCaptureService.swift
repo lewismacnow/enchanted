@@ -54,24 +54,36 @@ class ScreenCaptureService: @unchecked Sendable {
 
     // MARK: - Screenshot Capture
 
-    /// Capture a screenshot of all on-screen content using CGWindowListCreateImage.
-    func captureScreenshot() throws -> CGImage {
-        guard let image = CGWindowListCreateImage(
-            .null,
-            .optionOnScreenOnly,
-            kCGNullWindowID,
-            [.bestResolution]
-        ) else {
-            throw ScreenCaptureError(message: "Failed to capture screenshot via CGWindowListCreateImage")
+    /// Capture a screenshot of each display separately using NSScreen.screens.
+    func captureScreenshots() -> [CGImage] {
+        var images: [CGImage] = []
+        for screen in NSScreen.screens {
+            let frame = screen.frame
+            // NSScreen uses bottom-left origin; CGWindowListCreateImage uses top-left.
+            // CGWindowListCreateImage with a specific rect captures that region of the global display space.
+            let cgRect = CGRect(
+                x: frame.origin.x,
+                y: frame.origin.y,
+                width: frame.width,
+                height: frame.height
+            )
+            if let image = CGWindowListCreateImage(
+                cgRect,
+                .optionOnScreenOnly,
+                kCGNullWindowID,
+                [.bestResolution]
+            ) {
+                images.append(image)
+            }
         }
-        return image
+        return images
     }
 
     /// Save a CGImage to disk as JPEG and return the file path.
     func saveScreenshot(_ image: CGImage) throws -> String {
         ensureStorageDirectoryExists()
 
-        let filename = "dejaview_\(Int(Date().timeIntervalSince1970 * 1000)).jpg"
+        let filename = "dejaview_\(Int(Date().timeIntervalSince1970 * 1000))_\(UUID().uuidString.prefix(6)).jpg"
         let fileURL = storageDirectory.appendingPathComponent(filename)
 
         let bitmapRep = NSBitmapImageRep(cgImage: image)
@@ -117,23 +129,87 @@ class ScreenCaptureService: @unchecked Sendable {
         return recognizedText
     }
 
-    // MARK: - Full Pipeline
+    // MARK: - Vision Model Description
 
-    /// Capture screenshot, run OCR, generate embedding, and return all results.
-    func captureAndProcess() async throws -> (imagePath: String, extractedText: String, embedding: [Float]) {
-        let screenshot = try captureScreenshot()
-        let imagePath = try saveScreenshot(screenshot)
-        let extractedText = try extractText(from: screenshot)
+    /// Describe a screenshot using an OpenAI-compatible vision model.
+    /// Returns empty string if no vision model is configured.
+    func describeWithVision(screenshot: CGImage) async -> String {
+        let visionModel = UserDefaults.standard.string(forKey: "dejaViewVisionModel") ?? ""
+        guard !visionModel.isEmpty else { return "" }
 
-        let embedding: [Float]
-        if extractedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            // No text found; use a placeholder so we still have an embedding
-            embedding = try await embeddingService.embed(text: "[screenshot with no detected text]")
-        } else {
-            embedding = try await embeddingService.embed(text: extractedText)
+        // Convert CGImage to JPEG base64
+        let bitmapRep = NSBitmapImageRep(cgImage: screenshot)
+        guard let jpegData = bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: 0.7]) else {
+            return ""
+        }
+        let base64String = jpegData.base64EncodedString()
+
+        let systemMessage = OpenAIChatMessage(role: "system", text: "Describe what you see on this screen in detail. Focus on the application content, text, and visual elements.")
+        let userMessage = OpenAIChatMessage(role: "user", parts: [
+            .textPart("Describe this screenshot:"),
+            .imagePart(base64Data: base64String, mimeType: "image/jpeg")
+        ])
+
+        var fullResponse = ""
+        let stream = OpenAIService.shared.streamChat(
+            model: visionModel,
+            messages: [systemMessage, userMessage],
+            temperature: 0.3
+        )
+
+        do {
+            for try await chunk in stream {
+                fullResponse += chunk
+            }
+        } catch {
+            print("Vision description failed: \(error)")
+            return ""
         }
 
-        return (imagePath: imagePath, extractedText: extractedText, embedding: embedding)
+        return fullResponse
+    }
+
+    // MARK: - Full Pipeline
+
+    /// Capture all screens, run OCR, optionally get vision description, generate embeddings.
+    /// Returns one result per screen.
+    func captureAndProcess() async throws -> [(imagePath: String, extractedText: String, visionDescription: String, embedding: [Float])] {
+        let screenshots = captureScreenshots()
+        guard !screenshots.isEmpty else {
+            throw ScreenCaptureError(message: "Failed to capture any screenshots")
+        }
+
+        var results: [(imagePath: String, extractedText: String, visionDescription: String, embedding: [Float])] = []
+
+        for screenshot in screenshots {
+            let imagePath = try saveScreenshot(screenshot)
+            let extractedText = try extractText(from: screenshot)
+            let visionDescription = await describeWithVision(screenshot: screenshot)
+
+            // Combine OCR text and vision description for embedding
+            var textToEmbed = extractedText
+            if !visionDescription.isEmpty {
+                textToEmbed = textToEmbed.isEmpty
+                    ? visionDescription
+                    : "\(textToEmbed)\n\n[Vision Description]\n\(visionDescription)"
+            }
+
+            let embedding: [Float]
+            if textToEmbed.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                embedding = try await embeddingService.embed(text: "[screenshot with no detected text]")
+            } else {
+                embedding = try await embeddingService.embed(text: textToEmbed)
+            }
+
+            results.append((
+                imagePath: imagePath,
+                extractedText: extractedText,
+                visionDescription: visionDescription,
+                embedding: embedding
+            ))
+        }
+
+        return results
     }
 
     // MARK: - Timer-Based Capture
@@ -143,7 +219,7 @@ class ScreenCaptureService: @unchecked Sendable {
     @MainActor
     func startCapturing(
         interval: TimeInterval,
-        onCapture: @escaping (Result<(imagePath: String, extractedText: String, embedding: [Float]), Error>) -> Void
+        onCapture: @escaping (Result<[(imagePath: String, extractedText: String, visionDescription: String, embedding: [Float])], Error>) -> Void
     ) {
         guard !isCapturing else { return }
         isCapturing = true

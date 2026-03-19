@@ -121,34 +121,230 @@ struct MCPSettingsView: View {
     }
 }
 
+// MARK: - Preset
+
+private struct MCPPreset {
+    let name: String
+    let command: String
+    let args: [String]
+    let env: [String: String]
+
+    static let presets: [MCPPreset] = [
+        MCPPreset(
+            name: "Filesystem",
+            command: "npx",
+            args: ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"],
+            env: [:]
+        ),
+        MCPPreset(
+            name: "GitHub",
+            command: "npx",
+            args: ["-y", "@modelcontextprotocol/server-github"],
+            env: ["GITHUB_TOKEN": "your-token-here"]
+        ),
+        MCPPreset(
+            name: "Brave Search",
+            command: "npx",
+            args: ["-y", "@modelcontextprotocol/server-brave-search"],
+            env: ["BRAVE_API_KEY": "your-api-key-here"]
+        ),
+        MCPPreset(
+            name: "Memory",
+            command: "npx",
+            args: ["-y", "@modelcontextprotocol/server-memory"],
+            env: [:]
+        ),
+        MCPPreset(
+            name: "Fetch",
+            command: "npx",
+            args: ["-y", "@modelcontextprotocol/server-fetch"],
+            env: [:]
+        )
+    ]
+}
+
+// MARK: - Add Sheet
+
 struct AddMCPServerSheet: View {
     let onAdd: (MCPServerConfig) -> Void
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var command = ""
     @State private var argsString = ""
+    @State private var envPairs: [(key: String, value: String)] = []
+    @State private var showImportJSON = false
+    @State private var importJSONText = ""
+    @State private var importError = ""
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 0) {
             Text("Add MCP Server")
                 .font(.headline)
+                .padding(.top, 16)
+                .padding(.bottom, 8)
 
-            Form {
-                TextField("Name", text: $name)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                TextField("Command (e.g., npx)", text: $command)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                TextField("Arguments (space-separated)", text: $argsString)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    // MARK: Quick Add Presets
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Quick Add")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+
+                        LazyVGrid(columns: [
+                            GridItem(.flexible()),
+                            GridItem(.flexible()),
+                            GridItem(.flexible())
+                        ], spacing: 6) {
+                            ForEach(MCPPreset.presets, id: \.name) { preset in
+                                Button {
+                                    applyPreset(preset)
+                                } label: {
+                                    Text(preset.name)
+                                        .font(.caption)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 6)
+                                }
+                                .buttonStyle(.bordered)
+                                .controlSize(.small)
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+
+                    Divider()
+
+                    // MARK: Import from JSON
+                    VStack(alignment: .leading, spacing: 8) {
+                        Button {
+                            showImportJSON.toggle()
+                        } label: {
+                            Label(
+                                showImportJSON ? "Hide JSON Import" : "Import from JSON",
+                                systemImage: "doc.text"
+                            )
+                            .font(.subheadline)
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(.blue)
+
+                        if showImportJSON {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Paste the mcpServers object from claude_desktop_config.json:")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+
+                                TextEditor(text: $importJSONText)
+                                    .font(.system(.caption, design: .monospaced))
+                                    .frame(height: 120)
+                                    .border(Color.secondary.opacity(0.3))
+
+                                if !importError.isEmpty {
+                                    Text(importError)
+                                        .font(.caption)
+                                        .foregroundStyle(.red)
+                                }
+
+                                Button("Import All Servers") {
+                                    importFromJSON()
+                                }
+                                .buttonStyle(.bordered)
+                                .controlSize(.small)
+                                .disabled(importJSONText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+
+                    Divider()
+
+                    // MARK: Manual Configuration
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Server Configuration")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+
+                        TextField("Name", text: $name)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                        TextField("Command (e.g., npx)", text: $command)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                        TextField("Arguments (space-separated)", text: $argsString)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                    }
+                    .padding(.horizontal)
+
+                    // MARK: Environment Variables
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Environment Variables")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                            Spacer()
+                            Button {
+                                envPairs.append((key: "", value: ""))
+                            } label: {
+                                Image(systemName: "plus.circle")
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(.blue)
+                        }
+
+                        if envPairs.isEmpty {
+                            Text("No environment variables. Tap + to add.")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        } else {
+                            ForEach(envPairs.indices, id: \.self) { index in
+                                HStack(spacing: 4) {
+                                    TextField("KEY", text: Binding(
+                                        get: { envPairs[index].key },
+                                        set: { envPairs[index].key = $0 }
+                                    ))
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .frame(maxWidth: .infinity)
+
+                                    Text("=")
+                                        .foregroundStyle(.secondary)
+
+                                    TextField("value", text: Binding(
+                                        get: { envPairs[index].value },
+                                        set: { envPairs[index].value = $0 }
+                                    ))
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .frame(maxWidth: .infinity)
+
+                                    Button {
+                                        envPairs.remove(at: index)
+                                    } label: {
+                                        Image(systemName: "minus.circle")
+                                            .foregroundStyle(.red)
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+                .padding(.vertical, 8)
             }
-            .formStyle(.grouped)
+
+            Divider()
 
             HStack {
                 Button("Cancel") { dismiss() }
                 Spacer()
                 Button("Add") {
                     let args = argsString.components(separatedBy: " ").filter { !$0.isEmpty }
-                    let config = MCPServerConfig(name: name, command: command, args: args)
+                    let env = buildEnvDict()
+                    let config = MCPServerConfig(
+                        name: name,
+                        command: command,
+                        args: args,
+                        env: env.isEmpty ? nil : env
+                    )
                     onAdd(config)
                     dismiss()
                 }
@@ -156,9 +352,73 @@ struct AddMCPServerSheet: View {
                 .disabled(name.isEmpty || command.isEmpty)
             }
             .padding(.horizontal)
-            .padding(.bottom)
+            .padding(.vertical, 12)
         }
-        .frame(minWidth: 400, minHeight: 250)
+        .frame(minWidth: 480, minHeight: 500)
+    }
+
+    // MARK: - Helpers
+
+    private func applyPreset(_ preset: MCPPreset) {
+        name = preset.name
+        command = preset.command
+        argsString = preset.args.joined(separator: " ")
+        envPairs = preset.env.map { (key: $0.key, value: $0.value) }
+            .sorted { $0.key < $1.key }
+    }
+
+    private func buildEnvDict() -> [String: String] {
+        var dict: [String: String] = [:]
+        for pair in envPairs where !pair.key.isEmpty {
+            dict[pair.key] = pair.value
+        }
+        return dict
+    }
+
+    /// Parse Claude Desktop format JSON: { "serverName": { "command": "...", "args": [...], "env": {...} }, ... }
+    private func importFromJSON() {
+        importError = ""
+
+        let trimmed = importJSONText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let data = trimmed.data(using: .utf8) else {
+            importError = "Invalid text encoding."
+            return
+        }
+
+        do {
+            guard let root = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+                importError = "Expected a JSON object with server names as keys."
+                return
+            }
+
+            var addedCount = 0
+            for (serverName, value) in root {
+                guard let serverDict = value as? [String: Any],
+                      let cmd = serverDict["command"] as? String else {
+                    continue
+                }
+
+                let args = serverDict["args"] as? [String] ?? []
+                let envDict = serverDict["env"] as? [String: String]
+
+                let config = MCPServerConfig(
+                    name: serverName,
+                    command: cmd,
+                    args: args,
+                    env: envDict
+                )
+                onAdd(config)
+                addedCount += 1
+            }
+
+            if addedCount > 0 {
+                dismiss()
+            } else {
+                importError = "No valid server configurations found in JSON."
+            }
+        } catch {
+            importError = "JSON parse error: \(error.localizedDescription)"
+        }
     }
 }
 #endif

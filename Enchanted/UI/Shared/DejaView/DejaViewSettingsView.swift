@@ -11,12 +11,22 @@ struct DejaViewSettingsView: View {
     @State private var dejaViewStore = DejaViewStore.shared
 
     @State private var connectionURL = ""
+    @State private var visionModel: String = UserDefaults.standard.string(forKey: "dejaViewVisionModel") ?? ""
 
     private let intervalOptions: [(label: String, value: TimeInterval)] = [
         ("10 seconds", 10),
         ("30 seconds", 30),
         ("60 seconds", 60),
         ("5 minutes", 300)
+    ]
+
+    private let retentionOptions: [(label: String, value: Int)] = [
+        ("7 days", 7),
+        ("14 days", 14),
+        ("30 days", 30),
+        ("60 days", 60),
+        ("90 days", 90),
+        ("Forever", 0)
     ]
 
     private let vectorStoreOptions: [(label: String, value: String)] = [
@@ -78,6 +88,26 @@ struct DejaViewSettingsView: View {
                         ForEach(intervalOptions, id: \.value) { option in
                             Text(option.label).tag(option.value)
                         }
+                    }
+
+                    Picker("Retention Period", selection: Binding(
+                        get: { dejaViewStore.retentionDays },
+                        set: { dejaViewStore.retentionDays = $0 }
+                    )) {
+                        ForEach(retentionOptions, id: \.value) { option in
+                            Text(option.label).tag(option.value)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        TextField("Vision Model (optional)", text: $visionModel)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .onChange(of: visionModel) { _, newValue in
+                                UserDefaults.standard.set(newValue, forKey: "dejaViewVisionModel")
+                            }
+                        Text("e.g. \"llava:latest\" or \"gpt-4o\". When set, screenshots are described by this vision model for better search. Leave empty to skip.")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
                     }
                 }
 
