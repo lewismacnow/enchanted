@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sindresorhus/KeyboardShortcuts",
       "state" : {
-        "revision" : "2e5f15581fefb821d4b366e57d817be8bf12aa58",
-        "version" : "2.0.1"
+        "revision" : "1aef85578fdd4f9eaeeb8d53b7b4fc31bf08fe27",
+        "version" : "2.4.0"
       }
     },
     {
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-async-algorithms.git",
       "state" : {
-        "revision" : "da4e36f86544cdf733a40d59b3a2267e3a7bbf36",
-        "version" : "1.0.0"
+        "revision" : "9d349bcc328ac3c31ce40e746b5882742a0d1272",
+        "version" : "1.1.3"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/twostraws/Vortex",
       "state" : {
-        "revision" : "bb48b128d3c13c68c68e83833c622eec9f6c701f",
-        "version" : "1.0.1"
+        "revision" : "9d9d9016ceace579455f01f8e0bd59facae7d252",
+        "version" : "1.0.4"
       }
     },
     {

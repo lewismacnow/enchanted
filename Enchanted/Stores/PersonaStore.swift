@@ -45,10 +45,11 @@ final class PersonaStore: @unchecked Sendable {
     }
 
     func deletePersona(_ persona: PersonaSD) async {
+        let personaId = persona.id
         do {
             try await swiftDataService.deletePersona(persona)
             await MainActor.run {
-                if activePersona?.id == persona.id {
+                if activePersona?.id == personaId {
                     activePersona = nil
                 }
             }

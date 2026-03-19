@@ -27,8 +27,7 @@ struct ReEnchantedApp: App {
         WindowGroup {
             ApplicationEntry()
 #if os(macOS)
-                .onKeyboardShortcut(KeyboardShortcuts.Name.togglePanelMode, type: .keyDown) {
-                    print("heya")
+                .onGlobalKeyboardShortcut(KeyboardShortcuts.Name.togglePanelMode, type: .keyDown) {
                     panelManager.togglePanel()
                 }
                 .onAppear {

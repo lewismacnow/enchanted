@@ -63,3 +63,22 @@ Re-Enchanted is a macOS/iOS/visionOS LLM chat client forked from [Enchanted](htt
 - **MCP**: JSON-RPC stdio client for tool server integration
 - **DejaView**: screen capture + OCR + vector embedding + time-based search
 - **Tool Calling**: OpenAI function calling with tools/tool_choice in requests
+- **Conversation Pinning**: pin/unpin conversations to sidebar top
+- **Conversation Search**: real-time search by name and message content
+
+## Dependencies
+
+| Package | Min Version | Status | Notes |
+|---------|-------------|--------|-------|
+| OllamaKit (AugustDev fork) | `main` branch | ⚠️ Stale fork | Upstream `kevinhermawan/OllamaKit` is at 5.0.8+ with tool calling, Swift 6 |
+| swift-markdown-ui | 2.4.1 | ✅ Latest | Maintenance mode; successor is `gonzalezreal/textual` |
+| Splash | 0.16.0 | ⚠️ Abandoned | No updates for 2+ years; plan replacement |
+| ActivityIndicatorView | 1.2.1 | ✅ Stable | |
+| Vortex | 1.0.4 | ✅ Stable | |
+| KeyboardShortcuts | 2.4.0 | ✅ Active | macOS only, App Store compatible |
+| WrappingHStack | 2.2.11 | ✅ Active | visionOS support added |
+| swift-async-algorithms | 1.1.3 | ✅ Active (Apple) | Swift 6 compilation fixes |
+
+### Migration Backlog
+- **OllamaKit**: Migrate from `AugustDev/OllamaKit` (frozen fork) to `kevinhermawan/OllamaKit` 5.0.8+. Breaking API changes — v5 removed Alamofire, added tool calling + structured output.
+- **Splash**: Plan replacement with MarkdownUI built-in highlighting or `Highlightr`.
