@@ -87,7 +87,7 @@ final class MCPStore: @unchecked Sendable {
             }
         }
 
-        nonisolated(unsafe) let finalTools = collectedTools
+        let finalTools = collectedTools
         await MainActor.run {
             self.availableTools = finalTools
         }

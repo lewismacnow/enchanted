@@ -119,10 +119,10 @@ struct ChatMessageView: View {
                 Button(action: {
                     Task {
                         await speechSynthesizer.stopSpeaking()
-                        await speechSynthesizer.speak(text: message.content, onFinished: { isSpeaking = false })
-                        DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
-                            isSpeaking = true
-                        }
+                        isSpeaking = true
+                        await speechSynthesizer.speak(text: message.content, onFinished: {
+                            isSpeaking = false
+                        })
                     }
                 }) {
                     Image(systemName: "speaker.wave.2.fill")

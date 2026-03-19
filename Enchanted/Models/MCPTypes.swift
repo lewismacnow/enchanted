@@ -25,7 +25,7 @@ public struct MCPServerConfig: Codable, Sendable {
 // MARK: - MCP Tool & Resource Types
 
 /// A tool definition exposed by an MCP server.
-public struct MCPToolDefinition: Codable {
+public struct MCPToolDefinition: Codable, Sendable {
     public let name: String
     public let description: String?
     public let inputSchema: [String: AnyCodableValue]?
@@ -38,7 +38,7 @@ public struct MCPToolDefinition: Codable {
 }
 
 /// A resource exposed by an MCP server.
-public struct MCPResource: Codable {
+public struct MCPResource: Codable, Sendable {
     public let uri: String
     public let name: String
     public let description: String?
@@ -55,7 +55,7 @@ public struct MCPResource: Codable {
 // MARK: - JSON-RPC 2.0 Types
 
 /// A JSON-RPC 2.0 request message.
-public struct JSONRPCRequest: Codable {
+public struct JSONRPCRequest: Codable, Sendable {
     public let jsonrpc: String
     public let id: Int
     public let method: String
@@ -70,7 +70,7 @@ public struct JSONRPCRequest: Codable {
 }
 
 /// A JSON-RPC 2.0 response message.
-public struct JSONRPCResponse: Codable {
+public struct JSONRPCResponse: Codable, Sendable {
     public let jsonrpc: String
     public let id: Int?
     public let result: AnyCodableValue?
@@ -85,7 +85,7 @@ public struct JSONRPCResponse: Codable {
 }
 
 /// A JSON-RPC 2.0 error object.
-public struct JSONRPCError: Codable {
+public struct JSONRPCError: Codable, Sendable {
     public let code: Int
     public let message: String
     public let data: AnyCodableValue?
@@ -98,7 +98,7 @@ public struct JSONRPCError: Codable {
 }
 
 /// A JSON-RPC 2.0 notification (no id, no response expected).
-public struct JSONRPCNotification: Codable {
+public struct JSONRPCNotification: Codable, Sendable {
     public let jsonrpc: String
     public let method: String
     public let params: [String: AnyCodableValue]?
@@ -113,7 +113,7 @@ public struct JSONRPCNotification: Codable {
 // MARK: - MCP Protocol Result Types
 
 /// The result of an MCP `initialize` request.
-public struct MCPInitializeResult: Codable {
+public struct MCPInitializeResult: Codable, Sendable {
     public let protocolVersion: String
     public let capabilities: MCPCapabilities
     public let serverInfo: MCPServerInfo
@@ -126,7 +126,7 @@ public struct MCPInitializeResult: Codable {
 }
 
 /// Capabilities reported by an MCP server.
-public struct MCPCapabilities: Codable {
+public struct MCPCapabilities: Codable, Sendable {
     public let tools: MCPToolsCapability?
 
     public init(tools: MCPToolsCapability? = nil) {
@@ -135,7 +135,7 @@ public struct MCPCapabilities: Codable {
 }
 
 /// Capability details for MCP tools.
-public struct MCPToolsCapability: Codable {
+public struct MCPToolsCapability: Codable, Sendable {
     public let listChanged: Bool?
 
     public init(listChanged: Bool? = nil) {
@@ -144,7 +144,7 @@ public struct MCPToolsCapability: Codable {
 }
 
 /// Information about an MCP server.
-public struct MCPServerInfo: Codable {
+public struct MCPServerInfo: Codable, Sendable {
     public let name: String
     public let version: String
 
@@ -155,7 +155,7 @@ public struct MCPServerInfo: Codable {
 }
 
 /// The result of an MCP `tools/list` request.
-public struct MCPToolsListResult: Codable {
+public struct MCPToolsListResult: Codable, Sendable {
     public let tools: [MCPToolDefinition]
 
     public init(tools: [MCPToolDefinition]) {
@@ -164,7 +164,7 @@ public struct MCPToolsListResult: Codable {
 }
 
 /// The result of an MCP `tools/call` request.
-public struct MCPToolCallResult: Codable {
+public struct MCPToolCallResult: Codable, Sendable {
     public let content: [MCPContent]
     public let isError: Bool?
 
@@ -175,7 +175,7 @@ public struct MCPToolCallResult: Codable {
 }
 
 /// A content block returned from an MCP tool call.
-public struct MCPContent: Codable {
+public struct MCPContent: Codable, Sendable {
     public let type: String
     public let text: String?
 

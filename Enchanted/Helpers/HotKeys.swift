@@ -63,7 +63,7 @@ fileprivate func hotkeysSubscription(combinations: [HotkeyCombination]) -> Bool 
         
         if basePressedCorrectly && comb.key.isPressed {
             comb.action()
-//            return true
+            return true
         }
     }
     
@@ -119,8 +119,6 @@ enum KeyBase: CaseIterable {
         }
     }
 }
-
-import Foundation
 
 ///https://gist.github.com/chipjarred/cbb324c797aec865918a8045c4b51d14
 extension CGKeyCode {

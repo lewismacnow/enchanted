@@ -9,7 +9,7 @@ import Foundation
 
 /// A type-erased Codable value for representing arbitrary JSON values,
 /// used for JSON Schema representation of tool parameters.
-public enum AnyCodableValue: Codable, Equatable {
+public enum AnyCodableValue: Codable, Equatable, Sendable {
     case string(String)
     case int(Int)
     case double(Double)
@@ -80,7 +80,7 @@ public enum AnyCodableValue: Codable, Equatable {
 // MARK: - OpenAI Tool Calling Types
 
 /// Defines a tool available for the model to call.
-public struct ToolDefinition: Codable {
+public struct ToolDefinition: Codable, Sendable {
     public let type: String
     public let function: FunctionDefinition
 
@@ -91,7 +91,7 @@ public struct ToolDefinition: Codable {
 }
 
 /// Describes a function that can be called by the model.
-public struct FunctionDefinition: Codable {
+public struct FunctionDefinition: Codable, Sendable {
     public let name: String
     public let description: String?
     public let parameters: [String: AnyCodableValue]?
@@ -104,7 +104,7 @@ public struct FunctionDefinition: Codable {
 }
 
 /// Represents a tool call made by the model in a response.
-public struct ToolCall: Codable {
+public struct ToolCall: Codable, Sendable {
     public let id: String
     public let type: String
     public let function: ToolCallFunction
@@ -117,7 +117,7 @@ public struct ToolCall: Codable {
 }
 
 /// The function invocation details within a tool call.
-public struct ToolCallFunction: Codable {
+public struct ToolCallFunction: Codable, Sendable {
     public let name: String
     public let arguments: String
 
@@ -128,7 +128,7 @@ public struct ToolCallFunction: Codable {
 }
 
 /// A message containing the result of a tool call, sent back to the model.
-public struct ToolCallResponse: Codable {
+public struct ToolCallResponse: Codable, Sendable {
     public let role: String
     public let tool_call_id: String
     public let content: String

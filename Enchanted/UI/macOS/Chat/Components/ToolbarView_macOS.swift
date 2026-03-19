@@ -31,6 +31,7 @@ struct ToolbarView: View {
         .frame(height: 20)
 
         MoreOptionsMenuView(copyChat: copyChat)
+            .help("Export and options")
 
         Button(action: onNewConversationTap) {
             Image(systemName: "square.and.pencil")
@@ -42,6 +43,7 @@ struct ToolbarView: View {
         }
         .buttonStyle(PlainButtonStyle())
         .keyboardShortcut(KeyEquivalent("n"), modifiers: .command)
+        .help("New Conversation (⌘N)")
     }
 }
 
