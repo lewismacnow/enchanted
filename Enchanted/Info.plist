@@ -13,9 +13,5 @@
 	</dict>
 	<key>com.apple.security.network.client</key>
 	<true/>
-	<key>WKCompanionAppBundleIdentifier</key>
-	<string>uk.co.itomlab.re-enchanted</string>
-	<key>WKWatchOnly</key>
-	<false/>
 </dict>
 </plist>

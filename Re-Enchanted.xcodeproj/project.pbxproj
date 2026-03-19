@@ -1035,6 +1035,10 @@
 				INFOPLIST_FILE = Enchanted/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Re-Enchanted";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				"INFOPLIST_KEY_WKApplication[sdk=watchos*]" = YES;
+				"INFOPLIST_KEY_WKApplication[sdk=watchsimulator*]" = YES;
+				"INFOPLIST_KEY_WKWatchOnly[sdk=watchos*]" = YES;
+				"INFOPLIST_KEY_WKWatchOnly[sdk=watchsimulator*]" = YES;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Audio is recorded to transcribe text. Recording is discarded after transcription.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "You can view a text transcription of your meeting in the app.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -1088,6 +1092,10 @@
 				INFOPLIST_FILE = Enchanted/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Re-Enchanted";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				"INFOPLIST_KEY_WKApplication[sdk=watchos*]" = YES;
+				"INFOPLIST_KEY_WKApplication[sdk=watchsimulator*]" = YES;
+				"INFOPLIST_KEY_WKWatchOnly[sdk=watchos*]" = YES;
+				"INFOPLIST_KEY_WKWatchOnly[sdk=watchsimulator*]" = YES;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Audio is recorded to transcribe text. Recording is discarded after transcription.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "You can view a text transcription of your meeting in the app.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
