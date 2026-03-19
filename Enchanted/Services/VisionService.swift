@@ -14,6 +14,7 @@ class VisionService: @unchecked Sendable {
     private init() {}
 
     /// Describe an image using a vision-capable model via the OpenAI-compatible API.
+    @MainActor
     func describeImage(_ image: Image, model: LanguageModelSD) async throws -> String {
         guard let imageData = image.render()?.convertImageToBase64String() else {
             throw VisionError(description: "Failed to convert image to base64")

@@ -155,6 +155,7 @@ final class ConversationStore: Sendable {
 
     // MARK: - Ollama Provider
 
+    @MainActor
     private func sendViaOllama(model: LanguageModelSD, conversation: ConversationSD, image: Image?) async {
         var messageHistory = conversation.messages
             .sorted { $0.createdAt < $1.createdAt }
@@ -195,6 +196,7 @@ final class ConversationStore: Sendable {
 
     // MARK: - OpenAI Provider
 
+    @MainActor
     private func sendViaOpenAI(model: LanguageModelSD, conversation: ConversationSD, image: Image?) async {
         let sortedMessages = conversation.messages.sorted { $0.createdAt < $1.createdAt }
 
