@@ -149,8 +149,8 @@ extension SwiftDataService {
         try modelContext.saveChanges()
     }
 
-    func createMessage(_ mesasge: MessageSD) throws {
-        self.modelContext.insert(mesasge)
+    func createMessage(_ message: MessageSD) throws {
+        self.modelContext.insert(message)
         try modelContext.saveChanges()
     }
 }

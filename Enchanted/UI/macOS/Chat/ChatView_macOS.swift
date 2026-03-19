@@ -29,6 +29,7 @@ struct ChatView: View {
     var onSelectPersona: (@MainActor (_ persona: PersonaSD) -> Void)?
     var onConversationDelete: (_ conversation: ConversationSD) -> ()
     var onDeleteDailyConversations: (_ date: Date) -> ()
+    var onTogglePin: ((_ conversation: ConversationSD) -> Void)?
     var userInitials: String
     var copyChat: (_ json: Bool) -> ()
     
@@ -44,7 +45,8 @@ struct ChatView: View {
                 conversations: conversations,
                 onConversationTap: onConversationTap,
                 onConversationDelete: onConversationDelete,
-                onDeleteDailyConversations: onDeleteDailyConversations
+                onDeleteDailyConversations: onDeleteDailyConversations,
+                onTogglePin: onTogglePin
             )
             .toolbar {
 #if os(visionOS)

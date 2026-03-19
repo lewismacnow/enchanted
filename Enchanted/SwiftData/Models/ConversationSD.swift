@@ -15,6 +15,7 @@ final class ConversationSD: Identifiable {
     var name: String
     var createdAt: Date
     var updatedAt: Date
+    var isPinned: Bool = false
 
     @Relationship(deleteRule: .nullify)
     var model: LanguageModelSD?

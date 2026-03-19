@@ -158,6 +158,7 @@ struct Chat: View, Sendable {
                 onSelectPersona: selectPersona,
                 onConversationDelete: onConversationDelete,
                 onDeleteDailyConversations: conversationStore.deleteDailyConversations,
+                onTogglePin: conversationStore.togglePin,
                 userInitials: userInitials,
                 copyChat: copyChat
             )
@@ -168,7 +169,8 @@ struct Chat: View, Sendable {
                     conversations: conversationStore.conversations,
                     onConversationTap: onConversationTap,
                     onConversationDelete: onConversationDelete,
-                    onDeleteDailyConversations: conversationStore.deleteDailyConversations
+                    onDeleteDailyConversations: conversationStore.deleteDailyConversations,
+                    onTogglePin: conversationStore.togglePin
                 )
             }) {
                 ChatView(

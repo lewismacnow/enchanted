@@ -66,7 +66,6 @@ final class MessageSD: Identifiable {
         self.role = role
         self.done = done
         self.error = error
-        self.conversation = conversation
         self.image = image
     }
 

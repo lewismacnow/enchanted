@@ -67,6 +67,30 @@ final class ConversationStore: @unchecked Sendable {
         try await swiftDataService.createConversation(conversation)
     }
 
+    @MainActor
+    func togglePin(_ conversation: ConversationSD) {
+        conversation.isPinned.toggle()
+        Task {
+            try? await swiftDataService.updateConversation(conversation)
+            try? await loadConversations()
+        }
+    }
+
+    /// Search conversations by name or message content.
+    func searchConversations(query: String) async -> [ConversationSD] {
+        guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { return [] }
+        do {
+            nonisolated(unsafe) let allConversations = try await swiftDataService.fetchConversations()
+            let lowered = query.lowercased()
+            return allConversations.filter { conv in
+                if conv.name.lowercased().contains(lowered) { return true }
+                return conv.messages.contains { $0.content.lowercased().contains(lowered) }
+            }
+        } catch {
+            return []
+        }
+    }
+
     func reloadConversation(_ conversation: ConversationSD) async throws {
         nonisolated(unsafe) let (fetchedMessages, fetchedConversation) = try await (
             swiftDataService.fetchMessages(conversation.id),
@@ -110,12 +134,15 @@ final class ConversationStore: @unchecked Sendable {
         conversation.updatedAt = Date.now
         conversation.model = model
 
+        // Trim conversation if editing a previous message
         if let trimmingMessageId = trimmingMessageId {
-            conversation.messages = conversation.messages
+            let trimmed = conversation.messages
                 .sorted { $0.createdAt < $1.createdAt }
                 .prefix(while: { $0.id.uuidString != trimmingMessageId })
+            conversation.messages = Array(trimmed)
         }
 
+        // Add system prompt to first message in conversation
         if !systemPrompt.isEmpty && conversation.messages.isEmpty {
             let systemMessage = MessageSD(content: systemPrompt, role: "system")
             systemMessage.conversation = conversation
@@ -132,17 +159,21 @@ final class ConversationStore: @unchecked Sendable {
         let provider = model.modelProvider ?? .ollama
 
         Task {
-            try await swiftDataService.updateConversation(conversation)
-            try await swiftDataService.createMessage(userMessage)
-            try await swiftDataService.createMessage(assistantMessage)
-            try await reloadConversation(conversation)
-            try? await loadConversations()
+            do {
+                try await swiftDataService.updateConversation(conversation)
+                try await swiftDataService.createMessage(userMessage)
+                try await swiftDataService.createMessage(assistantMessage)
+                try await reloadConversation(conversation)
+                try? await loadConversations()
 
-            switch provider {
-            case .ollama:
-                await sendViaOllama(model: model, conversation: conversation, image: image)
-            case .openai:
-                await sendViaOpenAI(model: model, conversation: conversation, image: image)
+                switch provider {
+                case .ollama:
+                    await sendViaOllama(model: model, conversation: conversation, image: image)
+                case .openai:
+                    await sendViaOpenAI(model: model, conversation: conversation, image: image)
+                }
+            } catch {
+                self.handleError("Failed to save messages: \(error.localizedDescription)")
             }
         }
     }
@@ -156,20 +187,16 @@ final class ConversationStore: @unchecked Sendable {
         var messageHistory: [OKChatRequestData.Message] = []
 
         for msg in sortedMessages {
-            // Skip the empty assistant placeholder (last message)
             if msg.role == "assistant" && msg.content.isEmpty && msg == sortedMessages.last {
                 continue
             }
 
             let role = OKChatRequestData.Message.Role(rawValue: msg.role) ?? .assistant
 
-            // Attach image to the user message that has image data, or to the last user message if we have a fresh image
             if msg.role == "user", let imageData = msg.image, !imageData.isEmpty {
-                // Image was stored on this message — convert back to base64
                 let base64 = imageData.base64EncodedString()
                 messageHistory.append(OKChatRequestData.Message(role: role, content: msg.content, images: [base64]))
-            } else if msg.role == "user" && image != nil && msg == sortedMessages.dropLast().last {
-                // Fresh image from the current prompt — render and attach
+            } else if msg.role == "user" && image != nil && sortedMessages.count >= 2 && msg == sortedMessages[sortedMessages.count - 2] {
                 if let rendered = image?.render() {
                     let base64 = rendered.convertImageToBase64String()
                     messageHistory.append(OKChatRequestData.Message(role: role, content: msg.content, images: [base64]))
@@ -222,12 +249,11 @@ final class ConversationStore: @unchecked Sendable {
         var openAIMessages: [OpenAIChatMessage] = []
 
         for (index, msg) in sortedMessages.enumerated() {
-            // Skip empty assistant placeholder
             if msg.role == "assistant" && msg.content.isEmpty && index == sortedMessages.count - 1 {
                 continue
             }
 
-            let isLastUserMessage = (index == sortedMessages.count - 2) && msg.role == "user"
+            let isLastUserMessage = sortedMessages.count >= 2 && index == sortedMessages.count - 2 && msg.role == "user"
             let hasStoredImage = msg.role == "user" && msg.image != nil && !msg.image!.isEmpty
             let hasFreshImage = isLastUserMessage && image != nil && model.supportsImages
 
@@ -275,33 +301,33 @@ final class ConversationStore: @unchecked Sendable {
 
     @MainActor
     private func handleOllamaReceive(_ response: OKChatResponse) {
-        if messages.isEmpty { return }
+        guard !messages.isEmpty else { return }
 
         if let responseContent = response.message?.content {
-            currentMessageBuffer = currentMessageBuffer + responseContent
+            currentMessageBuffer += responseContent
+            let bufferedContent = currentMessageBuffer
 
             throttler.throttle { [weak self] in
-                guard let self = self else { return }
-                let lastIndex = self.messages.count - 1
-                self.messages[lastIndex].content.append(currentMessageBuffer)
-                self.trackThinkingDuration(for: self.messages[lastIndex])
-                currentMessageBuffer = ""
+                guard let self = self, let lastMessage = self.messages.last else { return }
+                lastMessage.content.append(bufferedContent)
+                self.trackThinkingDuration(for: lastMessage)
+                self.currentMessageBuffer = ""
             }
         }
     }
 
     @MainActor
     private func handleOpenAIReceive(_ content: String) {
-        if messages.isEmpty { return }
+        guard !messages.isEmpty else { return }
 
-        currentMessageBuffer = currentMessageBuffer + content
+        currentMessageBuffer += content
+        let bufferedContent = currentMessageBuffer
 
         throttler.throttle { [weak self] in
-            guard let self = self else { return }
-            let lastIndex = self.messages.count - 1
-            self.messages[lastIndex].content.append(currentMessageBuffer)
-            self.trackThinkingDuration(for: self.messages[lastIndex])
-            currentMessageBuffer = ""
+            guard let self = self, let lastMessage = self.messages.last else { return }
+            lastMessage.content.append(bufferedContent)
+            self.trackThinkingDuration(for: lastMessage)
+            self.currentMessageBuffer = ""
         }
     }
 
@@ -345,7 +371,7 @@ final class ConversationStore: @unchecked Sendable {
         }
 
         Task(priority: .background) {
-            try await self.swiftDataService.updateMessage(lastMessage)
+            try? await self.swiftDataService.updateMessage(lastMessage)
         }
 
         withAnimation {
