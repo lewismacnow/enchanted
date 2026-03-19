@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import MarkdownUI
+@preconcurrency import MarkdownUI
 
 struct MarkdownColours {
     static let text = Color(
@@ -36,7 +36,7 @@ struct MarkdownColours {
     static let checkbox = Color(rgba: 0xb9b9_bbff)
     static let checkboxBackground = Color(rgba: 0xeeee_efff)
     
-    static let enchantedTheme = Theme()
+    nonisolated(unsafe) static let enchantedTheme = Theme()
         .text {
             FontSize(14)
         }

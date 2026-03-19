@@ -10,7 +10,7 @@ import AVFoundation
 import SwiftUI
 
 
-class SpeechSynthesizerDelegate: NSObject, AVSpeechSynthesizerDelegate {
+class SpeechSynthesizerDelegate: NSObject, AVSpeechSynthesizerDelegate, @unchecked Sendable {
     var onSpeechFinished: (() -> Void)?
     var onSpeechStart: (() -> Void)?
     

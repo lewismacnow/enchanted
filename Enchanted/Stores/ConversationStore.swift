@@ -13,19 +13,15 @@ import Combine
 import SwiftUI
 
 @Observable
-final class ConversationStore: Sendable {
+final class ConversationStore: @unchecked Sendable {
     static let shared = ConversationStore(swiftDataService: SwiftDataService.shared)
 
-    private var swiftDataService: SwiftDataService
+    private let swiftDataService: SwiftDataService
     private var generation: AnyCancellable?
     private var openAITask: Task<Void, Never>?
 
     private var currentMessageBuffer: String = ""
-#if os(macOS)
     private let throttler = Throttler(delay: 0.1)
-#else
-    private let throttler = Throttler(delay: 0.1)
-#endif
 
     @MainActor var conversationState: ConversationState = .completed
     @MainActor var conversations: [ConversationSD] = []
@@ -38,16 +34,16 @@ final class ConversationStore: Sendable {
 
     func loadConversations() async throws {
         let fetchedConversations = try await swiftDataService.fetchConversations()
-        DispatchQueue.main.async {
+        await MainActor.run {
             self.conversations = fetchedConversations
         }
     }
 
     func deleteAllConversations() {
         Task {
-            DispatchQueue.main.async { [weak self] in
-                self?.messages = []
-                self?.selectedConversation = nil
+            await MainActor.run {
+                self.messages = []
+                self.selectedConversation = nil
             }
             try? await swiftDataService.deleteConversations()
             try? await swiftDataService.deleteMessages()
@@ -57,9 +53,9 @@ final class ConversationStore: Sendable {
 
     func deleteDailyConversations(_ date: Date) {
         Task {
-            DispatchQueue.main.async { [self] in
-                selectedConversation = nil
-                messages = []
+            await MainActor.run {
+                self.selectedConversation = nil
+                self.messages = []
             }
             try? await swiftDataService.deleteConversations()
             try? await loadConversations()
@@ -76,7 +72,7 @@ final class ConversationStore: Sendable {
             swiftDataService.getConversation(conversation.id)
         )
 
-        DispatchQueue.main.async {
+        await MainActor.run {
             self.messages = messages
             self.selectedConversation = selectedConversation
         }
@@ -89,7 +85,7 @@ final class ConversationStore: Sendable {
     func delete(_ conversation: ConversationSD) async throws {
         try await swiftDataService.deleteConversation(conversation)
         let fetchedConversations = try await swiftDataService.fetchConversations()
-        DispatchQueue.main.async {
+        await MainActor.run {
             self.selectedConversation = nil
             self.conversations = fetchedConversations
         }
@@ -113,20 +109,17 @@ final class ConversationStore: Sendable {
         conversation.updatedAt = Date.now
         conversation.model = model
 
-        /// trim conversation if on edit mode
         if let trimmingMessageId = trimmingMessageId {
             conversation.messages = conversation.messages
                 .sorted { $0.createdAt < $1.createdAt }
                 .prefix(while: { $0.id.uuidString != trimmingMessageId })
         }
 
-        /// add system prompt to very first message in the conversation
         if !systemPrompt.isEmpty && conversation.messages.isEmpty {
             let systemMessage = MessageSD(content: systemPrompt, role: "system")
             systemMessage.conversation = conversation
         }
 
-        /// construct new message
         let userMessage = MessageSD(content: userPrompt, role: "user", image: image?.render()?.compressImageData())
         userMessage.conversation = conversation
 
@@ -157,40 +150,65 @@ final class ConversationStore: Sendable {
 
     @MainActor
     private func sendViaOllama(model: LanguageModelSD, conversation: ConversationSD, image: Image?) async {
-        var messageHistory = conversation.messages
-            .sorted { $0.createdAt < $1.createdAt }
-            .map { OKChatRequestData.Message(role: OKChatRequestData.Message.Role(rawValue: $0.role) ?? .assistant, content: $0.content) }
+        let sortedMessages = conversation.messages.sorted { $0.createdAt < $1.createdAt }
 
-        /// attach selected image to the last Message
-        if let image = image?.render() {
-            if let lastMessage = messageHistory.popLast() {
-                let imagesBase64: [String] = [image.convertImageToBase64String()]
-                let messageWithImage = OKChatRequestData.Message(role: lastMessage.role, content: lastMessage.content, images: imagesBase64)
-                messageHistory.append(messageWithImage)
+        var messageHistory: [OKChatRequestData.Message] = []
+
+        for msg in sortedMessages {
+            // Skip the empty assistant placeholder (last message)
+            if msg.role == "assistant" && msg.content.isEmpty && msg == sortedMessages.last {
+                continue
+            }
+
+            let role = OKChatRequestData.Message.Role(rawValue: msg.role) ?? .assistant
+
+            // Attach image to the user message that has image data, or to the last user message if we have a fresh image
+            if msg.role == "user", let imageData = msg.image, !imageData.isEmpty {
+                // Image was stored on this message — convert back to base64
+                let base64 = imageData.base64EncodedString()
+                messageHistory.append(OKChatRequestData.Message(role: role, content: msg.content, images: [base64]))
+            } else if msg.role == "user" && image != nil && msg == sortedMessages.dropLast().last {
+                // Fresh image from the current prompt — render and attach
+                if let rendered = image?.render() {
+                    let base64 = rendered.convertImageToBase64String()
+                    messageHistory.append(OKChatRequestData.Message(role: role, content: msg.content, images: [base64]))
+                } else {
+                    messageHistory.append(OKChatRequestData.Message(role: role, content: msg.content))
+                }
+            } else {
+                messageHistory.append(OKChatRequestData.Message(role: role, content: msg.content))
             }
         }
 
         if await OllamaService.shared.ollamaKit.reachable() {
-            DispatchQueue.global(qos: .background).async {
-                var request = OKChatRequestData(model: model.name, messages: messageHistory)
+            let capturedHistory = messageHistory
+            let modelName = model.name
+
+            DispatchQueue.global(qos: .background).async { [weak self] in
+                guard let self = self else { return }
+                var request = OKChatRequestData(model: modelName, messages: capturedHistory)
                 request.options = OKCompletionOptions(temperature: 0)
 
                 self.generation = OllamaService.shared.ollamaKit.chat(data: request)
                     .sink(receiveCompletion: { [weak self] completion in
-                        switch completion {
-                        case .finished:
-                            self?.handleComplete()
-                        case .failure(let error):
-                            self?.handleError(error.localizedDescription)
+                        guard let self = self else { return }
+                        Task { @MainActor in
+                            switch completion {
+                            case .finished:
+                                self.handleComplete()
+                            case .failure(let error):
+                                self.handleError(error.localizedDescription)
+                            }
                         }
                     }, receiveValue: { [weak self] response in
-                        self?.handleOllamaReceive(response)
+                        guard let self = self else { return }
+                        Task { @MainActor in
+                            self.handleOllamaReceive(response)
+                        }
                     })
             }
         } else {
-            await MainActor.run {
-                self.handleError("Ollama server unreachable")
-            }
+            self.handleError("Ollama server unreachable")
         }
     }
 
@@ -203,10 +221,23 @@ final class ConversationStore: Sendable {
         var openAIMessages: [OpenAIChatMessage] = []
 
         for (index, msg) in sortedMessages.enumerated() {
-            let isLastUserMessage = (index == sortedMessages.count - 2) // second to last is the user message
-            let hasImage = isLastUserMessage && image != nil && model.supportsImages
+            // Skip empty assistant placeholder
+            if msg.role == "assistant" && msg.content.isEmpty && index == sortedMessages.count - 1 {
+                continue
+            }
 
-            if hasImage, let renderedImage = image?.render() {
+            let isLastUserMessage = (index == sortedMessages.count - 2) && msg.role == "user"
+            let hasStoredImage = msg.role == "user" && msg.image != nil && !msg.image!.isEmpty
+            let hasFreshImage = isLastUserMessage && image != nil && model.supportsImages
+
+            if hasStoredImage {
+                let base64 = msg.image!.base64EncodedString()
+                let parts: [OpenAIContentPart] = [
+                    .textPart(msg.content),
+                    .imagePart(base64Data: base64)
+                ]
+                openAIMessages.append(OpenAIChatMessage(role: msg.role, parts: parts))
+            } else if hasFreshImage, let renderedImage = image?.render() {
                 let base64 = renderedImage.convertImageToBase64String()
                 let parts: [OpenAIContentPart] = [
                     .textPart(msg.content),
@@ -214,10 +245,6 @@ final class ConversationStore: Sendable {
                 ]
                 openAIMessages.append(OpenAIChatMessage(role: msg.role, parts: parts))
             } else {
-                // Skip the empty assistant message (last message is placeholder)
-                if msg.role == "assistant" && msg.content.isEmpty && index == sortedMessages.count - 1 {
-                    continue
-                }
                 openAIMessages.append(OpenAIChatMessage(role: msg.role, text: msg.content))
             }
         }

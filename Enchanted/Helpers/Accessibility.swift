@@ -11,7 +11,7 @@ import AppKit
 import ApplicationServices
 import CoreGraphics
 
-final class Accessibility {
+final class Accessibility: Sendable {
     static let shared = Accessibility()
 
     /// Check if Enchanted has the right permissions

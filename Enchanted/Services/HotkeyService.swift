@@ -10,7 +10,7 @@ import Foundation
 import Magnet
 import SwiftUI
 
-final class HotkeyService {
+final class HotkeyService: @unchecked Sendable {
     static let shared = HotkeyService()
     
     func registerSingleUseSpace(modifiers: NSEvent.ModifierFlags, completion: @escaping () -> ()?) {

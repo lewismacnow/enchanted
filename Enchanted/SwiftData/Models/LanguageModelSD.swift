@@ -75,14 +75,11 @@ extension LanguageModelSD {
         return false
     }
     
-    static let sample: [LanguageModelSD] = [
+    nonisolated(unsafe) static let sample: [LanguageModelSD] = [
         .init(name: "Llama:latest", modelProvider: .ollama),
         .init(name: "Mistral:latest", modelProvider: .ollama)
     ]
 }
 
 
-// MARK: - @unchecked Sendable
-extension LanguageModelSD: @unchecked Sendable {
-    /// We hide compiler warnings for concurency. We have to make sure to modify the data only via SwiftDataManager to ensure concurrent operations.
-}
+// Note: @Model already implies Sendable conformance in Swift 5 with strict concurrency.

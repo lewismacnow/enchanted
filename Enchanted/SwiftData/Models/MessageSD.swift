@@ -75,7 +75,7 @@ final class MessageSD: Identifiable {
 }
 
 extension MessageSD {
-    static let sample: [MessageSD] = [
+    nonisolated(unsafe) static let sample: [MessageSD] = [
         .init(content: "How many quarks there are in SM?", role: "user"),
         .init(content: "There are 6 quarks in SM, each of them has an antiparticle and colour.", role: "assistant"),
         .init(content: "How elementary particle is defined in mathematics?", role: "user"),
@@ -83,7 +83,4 @@ extension MessageSD {
     ]
 }
 
-// MARK: - @unchecked Sendable
-extension MessageSD: @unchecked Sendable {
-    /// We hide compiler warnings for concurency. We have to make sure to modify the data only via SwiftDataManager to ensure concurrent operations.
-}
+// Note: @Model already implies Sendable conformance in Swift 5 with strict concurrency.

@@ -10,8 +10,8 @@ import Foundation
 import SwiftData
 
 @Observable
-final class LanguageModelStore {
-    static let shared = LanguageModelStore(swiftDataService: SwiftDataService.shared)
+final class LanguageModelStore: @unchecked Sendable {
+    nonisolated(unsafe) static let shared = LanguageModelStore(swiftDataService: SwiftDataService.shared)
 
     private var swiftDataService: SwiftDataService
     @MainActor var models: [LanguageModelSD] = []
