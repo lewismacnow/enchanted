@@ -18,6 +18,11 @@ final class LanguageModelStore: @unchecked Sendable {
     @MainActor var supportsImages = false
     @MainActor var selectedModel: LanguageModelSD?
 
+    /// Models filtered to exclude hidden ones — use this for all user-facing UI
+    @MainActor var visibleModels: [LanguageModelSD] {
+        models.filter { !$0.isHidden }
+    }
+
     init(swiftDataService: SwiftDataService) {
         self.swiftDataService = swiftDataService
     }
@@ -48,10 +53,17 @@ final class LanguageModelStore: @unchecked Sendable {
         }
     }
 
+    @MainActor
+    func toggleModelVisibility(_ model: LanguageModelSD) {
+        model.isHidden.toggle()
+        Task {
+            try? await swiftDataService.updateModel(model)
+        }
+    }
+
     func loadModels() async throws {
         var allModels: [LanguageModelSD] = []
 
-        // Determine active provider from settings
         let activeProvider = loadActiveProvider()
 
         switch activeProvider {
@@ -59,7 +71,12 @@ final class LanguageModelStore: @unchecked Sendable {
             do {
                 let ollamaModels = try await OllamaService.shared.getModels()
                 let ollamaModelSDs = ollamaModels.map {
-                    LanguageModelSD(name: $0.name, imageSupport: $0.imageSupport, modelProvider: .ollama)
+                    LanguageModelSD(
+                        name: $0.name,
+                        imageSupport: $0.imageSupport,
+                        supportsThinking: $0.thinkingSupport,
+                        modelProvider: .ollama
+                    )
                 }
                 allModels.append(contentsOf: ollamaModelSDs)
             } catch {
@@ -70,7 +87,12 @@ final class LanguageModelStore: @unchecked Sendable {
             do {
                 let openAIModels = try await OpenAIService.shared.getModels()
                 let openAIModelSDs = openAIModels.map {
-                    LanguageModelSD(name: $0.name, imageSupport: $0.imageSupport, modelProvider: .openai)
+                    LanguageModelSD(
+                        name: $0.name,
+                        imageSupport: $0.imageSupport,
+                        supportsThinking: $0.thinkingSupport,
+                        modelProvider: .openai
+                    )
                 }
                 allModels.append(contentsOf: openAIModelSDs)
             } catch {
@@ -78,10 +100,8 @@ final class LanguageModelStore: @unchecked Sendable {
             }
         }
 
-        // Save all models to local storage
         try await swiftDataService.saveModels(models: allModels)
 
-        // Fetch stored models
         nonisolated(unsafe) let storedModels = (try? await swiftDataService.fetchModels()) ?? []
         let modelNames = allModels.map { $0.name }
         nonisolated(unsafe) let filteredModels = storedModels.filter { modelNames.contains($0.name) }
@@ -89,16 +109,15 @@ final class LanguageModelStore: @unchecked Sendable {
         await MainActor.run {
             self.models = filteredModels
 
-            // Set first model as selected if none selected
-            if self.selectedModel == nil && !self.models.isEmpty {
-                self.selectedModel = self.models.first
+            if self.selectedModel == nil && !self.visibleModels.isEmpty {
+                self.selectedModel = self.visibleModels.first
                 self.supportsImages = self.selectedModel?.supportsImages ?? false
             }
         }
     }
 
     func deleteAllModels() async throws {
-        DispatchQueue.main.async {
+        await MainActor.run {
             self.models = []
             self.selectedModel = nil
             self.supportsImages = false

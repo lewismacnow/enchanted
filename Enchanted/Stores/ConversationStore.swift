@@ -27,6 +27,7 @@ final class ConversationStore: @unchecked Sendable {
     @MainActor var conversations: [ConversationSD] = []
     @MainActor var selectedConversation: ConversationSD?
     @MainActor var messages: [MessageSD] = []
+    @MainActor private var thinkingStartTime: Date?
 
     init(swiftDataService: SwiftDataService) {
         self.swiftDataService = swiftDataService
@@ -283,6 +284,7 @@ final class ConversationStore: @unchecked Sendable {
                 guard let self = self else { return }
                 let lastIndex = self.messages.count - 1
                 self.messages[lastIndex].content.append(currentMessageBuffer)
+                self.trackThinkingDuration(for: self.messages[lastIndex])
                 currentMessageBuffer = ""
             }
         }
@@ -298,7 +300,20 @@ final class ConversationStore: @unchecked Sendable {
             guard let self = self else { return }
             let lastIndex = self.messages.count - 1
             self.messages[lastIndex].content.append(currentMessageBuffer)
+            self.trackThinkingDuration(for: self.messages[lastIndex])
             currentMessageBuffer = ""
+        }
+    }
+
+    @MainActor
+    private func trackThinkingDuration(for message: MessageSD) {
+        let content = message.content
+        if content.contains("<think>") && thinkingStartTime == nil {
+            thinkingStartTime = Date()
+        }
+        if content.contains("</think>"), let startTime = thinkingStartTime {
+            message.thinkingDuration = Date().timeIntervalSince(startTime)
+            thinkingStartTime = nil
         }
     }
 
@@ -322,6 +337,12 @@ final class ConversationStore: @unchecked Sendable {
         guard let lastMessage = messages.last else { return }
         lastMessage.error = false
         lastMessage.done = true
+
+        // Finalize thinking duration if stream ended mid-think
+        if let startTime = thinkingStartTime {
+            lastMessage.thinkingDuration = Date().timeIntervalSince(startTime)
+            thinkingStartTime = nil
+        }
 
         Task(priority: .background) {
             try await self.swiftDataService.updateMessage(lastMessage)

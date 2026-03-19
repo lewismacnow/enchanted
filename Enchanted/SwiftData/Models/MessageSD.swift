@@ -55,6 +55,7 @@ final class MessageSD: Identifiable {
     var done: Bool = false
     var error: Bool = false
     var createdAt: Date = Date.now
+    var thinkingDuration: Double?
     @Attribute(.externalStorage) var image: Data?
     
     @Relationship var conversation: ConversationSD?

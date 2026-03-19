@@ -129,7 +129,7 @@ struct Chat: View, Sendable {
                 selectedConversation: conversationStore.selectedConversation,
                 conversations: conversationStore.conversations,
                 messages: conversationStore.messages,
-                modelsList: languageModelStore.models,
+                modelsList: languageModelStore.visibleModels,
                 onMenuTap: toggleMenu,
                 onNewConversationTap: newConversation,
                 onSendMessageTap: sendMessage,
@@ -158,7 +158,7 @@ struct Chat: View, Sendable {
                 ChatView(
                     conversation: conversationStore.selectedConversation,
                     messages: conversationStore.messages,
-                    modelsList: languageModelStore.models,
+                    modelsList: languageModelStore.visibleModels,
                     selectedModel: languageModelStore.selectedModel,
                     onSelectModel: languageModelStore.setModel,
                     onMenuTap: toggleMenu,

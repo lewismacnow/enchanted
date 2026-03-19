@@ -38,13 +38,14 @@ class OllamaService: @unchecked Sendable {
         }
     }
     
-    func getModels() async throws -> [LanguageModel]  {
+    func getModels() async throws -> [LanguageModel] {
         let response = try await ollamaKit.models()
-        let models = response.models.map{
+        let models = response.models.map {
             LanguageModel(
                 name: $0.name,
                 provider: .ollama,
-                imageSupport: $0.details.families?.contains(where: { $0 == "clip" || $0 == "mllama" }) ?? false
+                imageSupport: $0.details.families?.contains(where: { $0 == "clip" || $0 == "mllama" }) ?? false,
+                thinkingSupport: LanguageModelSD.detectThinkingSupport(modelName: $0.name)
             )
         }
         return models

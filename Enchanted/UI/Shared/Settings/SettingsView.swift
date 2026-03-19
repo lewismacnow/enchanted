@@ -119,6 +119,11 @@ struct SettingsView: View {
                     }
                 }
 
+                Section(header: Text("Models").font(.headline)) {
+                    ModelManagementView()
+                        .frame(minHeight: 200)
+                }
+
                 Section(header: Text("Chat").font(.headline)) {
                     VStack(alignment: .leading) {
                         Text("System prompt")

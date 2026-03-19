@@ -19,7 +19,6 @@ struct ChatMessageView: View {
     @Binding var editMessage: MessageSD?
     @State private var mouseHover = false
     @State private var isSpeaking = false
-    @State private var showThink = false
     
     var roleName: String  {
         let userInitialsNotEmpty = userInitials != "" ? userInitials : "AM"
@@ -62,31 +61,12 @@ struct ChatMessageView: View {
                 
                 VStack(alignment: .leading) {
                     if message.hasThink {
-                        HStack(spacing: 10.0, content: {
-                            Rectangle()
-                                .fill(Color.black)
-                                .frame(width: 10)
-                            if showThink {
-                                if let think = message.think {
-                                    Markdown(think)
-#if os(macOS)
-                                        .textSelection(.enabled)
-#endif
-                                        .markdownCodeSyntaxHighlighter(.splash(theme: codeHighlightColorScheme))
-                                        .markdownTheme(MarkdownColours.enchantedTheme)
-                                }
-                            } else {
-                                if message.thinkComplete {
-                                    Text("Thought for a few seconds.")
-                                } else {
-                                    Text("Thinking...")
-                                }
-                            }
-                        }).fixedSize(horizontal: false, vertical: true)
-                          .padding(.init(top: 0, leading: 0, bottom: 10, trailing: 0))
-                          .onTapGesture {
-                              showThink = !showThink
-                          }
+                        ThinkingView(
+                            thinkContent: message.think,
+                            isComplete: message.thinkComplete,
+                            duration: message.thinkingDuration
+                        )
+                        .padding(.bottom, 8)
                     }
                     if let content = message.realContent {
                         Markdown(content)

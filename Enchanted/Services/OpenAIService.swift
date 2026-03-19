@@ -198,10 +198,12 @@ class OpenAIService: @unchecked Sendable {
 
         return modelResponse.data.map { model in
             let supportsVision = detectVisionSupport(modelId: model.id)
+            let supportsThinking = LanguageModelSD.detectThinkingSupport(modelName: model.id)
             return LanguageModel(
                 name: model.id,
                 provider: .openai,
-                imageSupport: supportsVision
+                imageSupport: supportsVision,
+                thinkingSupport: supportsThinking
             )
         }
     }

@@ -10,6 +10,9 @@
 		01F47C002F1D8FE000357239 /* ProviderSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47BFF2F1D8FDB00357239 /* ProviderSettings.swift */; };
 		01F47C022F1D900100357240 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C012F1D900000357240 /* OpenAIService.swift */; };
 		01F47C042F1D900300357241 /* VisionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F47C032F1D900200357241 /* VisionService.swift */; };
+		02A10001300000000000A001 /* ModelCapabilityBadges.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A10002300000000000A002 /* ModelCapabilityBadges.swift */; };
+		02A10003300000000000A003 /* ThinkingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A10004300000000000A004 /* ThinkingView.swift */; };
+		02A10005300000000000A005 /* ModelManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A10006300000000000A006 /* ModelManagementView.swift */; };
 		3396E0762BD877D500213816 /* Menus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3396E0752BD877D500213816 /* Menus.swift */; };
 		FF0146CB2B3DA1DF00A2A9F6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0146CA2B3DA1DF00A2A9F6 /* Settings.swift */; };
 		FF0146CD2B3DADCA00A2A9F6 /* HapticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0146CC2B3DADCA00A2A9F6 /* HapticsService.swift */; };
@@ -112,6 +115,9 @@
 		01F47BFF2F1D8FDB00357239 /* ProviderSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderSettings.swift; sourceTree = "<group>"; };
 		01F47C012F1D900000357240 /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
 		01F47C032F1D900200357241 /* VisionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionService.swift; sourceTree = "<group>"; };
+		02A10002300000000000A002 /* ModelCapabilityBadges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCapabilityBadges.swift; sourceTree = "<group>"; };
+		02A10004300000000000A004 /* ThinkingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThinkingView.swift; sourceTree = "<group>"; };
+		02A10006300000000000A006 /* ModelManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManagementView.swift; sourceTree = "<group>"; };
 		3396E0752BD877D500213816 /* Menus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menus.swift; sourceTree = "<group>"; };
 		FF0146CA2B3DA1DF00A2A9F6 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		FF0146CC2B3DADCA00A2A9F6 /* HapticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsService.swift; sourceTree = "<group>"; };
@@ -229,6 +235,7 @@
 				FF10025F2B26499B0011A4DC /* ConversationStatusView.swift */,
 				FF9300DB2B7823B0000859F4 /* EmptyConversaitonView.swift */,
 				FF1002532B261D460011A4DC /* MessageListVIew.swift */,
+				02A10002300000000000A002 /* ModelCapabilityBadges.swift */,
 				FF1002692B2731C60011A4DC /* ModelSelectorView.swift */,
 				FF9C920B2BF0C088004C8275 /* OptionsMenuView.swift */,
 				FFB56F422C0353CF0020AFFD /* ReadingAloudView.swift */,
@@ -295,6 +302,7 @@
 		FF10026B2B2751630011A4DC /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				02A10006300000000000A006 /* ModelManagementView.swift */,
 				FF10026C2B2751760011A4DC /* SettingsView.swift */,
 				FF0146CA2B3DA1DF00A2A9F6 /* Settings.swift */,
 			);
@@ -434,6 +442,7 @@
 				FF10022F2B2482BA0011A4DC /* ChatMessageView.swift */,
 				FFD57E312BF291B2003FEFF1 /* CodeBlockView.swift */,
 				FFD57E2F2BF29145003FEFF1 /* MarkdownColours.swift */,
+				02A10004300000000000A004 /* ThinkingView.swift */,
 			);
 			path = ChatMessages;
 			sourceTree = "<group>";
@@ -731,6 +740,9 @@
 				01F47C002F1D8FE000357239 /* ProviderSettings.swift in Sources */,
 				01F47C022F1D900100357240 /* OpenAIService.swift in Sources */,
 				01F47C042F1D900300357241 /* VisionService.swift in Sources */,
+				02A10001300000000000A001 /* ModelCapabilityBadges.swift in Sources */,
+				02A10003300000000000A003 /* ThinkingView.swift in Sources */,
+				02A10005300000000000A005 /* ModelManagementView.swift in Sources */,
 				FFD57E322BF291B2003FEFF1 /* CodeBlockView.swift in Sources */,
 				FF1002542B261D460011A4DC /* MessageListVIew.swift in Sources */,
 				FF10024E2B25C2A70011A4DC /* ConversationSD.swift in Sources */,
