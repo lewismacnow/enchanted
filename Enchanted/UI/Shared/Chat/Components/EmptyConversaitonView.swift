@@ -36,12 +36,12 @@ struct EmptyConversaitonView: View, KeyboardReadable {
             
             VStack(spacing: 25) {
                 VStack(alignment: .center) {
-                    Text("Enchanted")
+                    Text("Re-Enchanted")
                         .font(Font.system(size: 46, weight: .thin))
                         .multilineTextAlignment(.center)
                         .foregroundStyle(
                             LinearGradient(
-                                colors: [Color(hex: "4285f4"), Color(hex: "9b72cb"), Color(hex: "d96570"), Color(hex: "#d96570")],
+                                colors: [Color(hex: "6366f1"), Color(hex: "8b5cf6"), Color(hex: "a855f7"), Color(hex: "d946ef")],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )

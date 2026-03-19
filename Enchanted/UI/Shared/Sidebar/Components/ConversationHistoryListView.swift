@@ -62,17 +62,27 @@ struct ConversationHistoryList: View {
                 
                 ForEach(conversationGroup.conversations, id:\.self) { dailyConversation in
                     Button(action: {onTap(dailyConversation)}) {
-                        HStack {
+                        HStack(alignment: .top) {
                             Circle()
                                 .frame(width: 6, height: 6)
+                                .padding(.top, 6)
                                 .transition(.opacity)
                                 .showIf(selectedConversation == dailyConversation)
 
-                            Text(dailyConversation.name)
-                                .lineLimit(1)
-                                .font(.system(size: 16))
-                                .foregroundColor(Color(.label))
-                                .transition(.opacity)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(dailyConversation.name)
+                                    .lineLimit(1)
+                                    .font(.system(size: 15))
+                                    .foregroundColor(Color(.label))
+                                    .transition(.opacity)
+
+                                if let modelName = dailyConversation.model?.prettyName {
+                                    Text(modelName)
+                                        .font(.caption2)
+                                        .foregroundStyle(.tertiary)
+                                        .lineLimit(1)
+                                }
+                            }
                             Spacer()
                         }
                         .animation(.easeOut(duration: 0.15), value: selectedConversation)
