@@ -26,6 +26,7 @@ struct ChatView_watchOS: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
+            // Tab 0: Conversations with own NavigationStack
             WatchConversationListView(
                 conversations: conversations,
                 selectedConversation: selectedConversation,
@@ -42,6 +43,7 @@ struct ChatView_watchOS: View {
             )
             .tag(0)
 
+            // Tab 1: Settings — NO NavigationStack here (uses List directly)
             WatchSettingsView()
                 .tag(1)
         }

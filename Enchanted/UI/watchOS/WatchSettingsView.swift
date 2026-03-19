@@ -20,54 +20,49 @@ struct WatchSettingsView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section("Provider") {
-                    Picker("Type", selection: $providerType) {
-                        Text("OpenAI").tag(ProviderSettings.ProviderType.openai)
-                        Text("Ollama").tag(ProviderSettings.ProviderType.ollama)
-                    }
-
-                    if providerType == .ollama {
-                        Label("Ollama is not supported on Apple Watch", systemImage: "exclamationmark.triangle")
-                            .font(.caption2)
-                            .foregroundStyle(.orange)
-                    }
+        List {
+            Section("Provider") {
+                Picker("Type", selection: $providerType) {
+                    Text("OpenAI").tag(ProviderSettings.ProviderType.openai)
                 }
 
-                Section("Connection") {
-                    TextField("Server URL", text: $serverURL)
-                        .textContentType(.URL)
-                        .autocorrectionDisabled()
-                        .font(.caption)
+                if providerType != .openai {
+                    Label("Only OpenAI-compatible providers are supported on Apple Watch", systemImage: "exclamationmark.triangle")
+                        .font(.caption2)
+                        .foregroundStyle(.orange)
+                }
+            }
 
-                    if providerType == .openai {
-                        SecureField("API Key", text: $apiKey)
-                            .font(.caption)
-                    }
+            Section("Connection") {
+                TextField("Server URL", text: $serverURL)
+                    .textContentType(.URL)
+                    .autocorrectionDisabled()
+                    .font(.caption)
+
+                SecureField("API Key", text: $apiKey)
+                    .font(.caption)
+            }
+
+            Section {
+                Button(action: saveSettings) {
+                    Label("Save", systemImage: "checkmark.circle")
                 }
 
-                Section {
-                    Button(action: saveSettings) {
-                        Label("Save", systemImage: "checkmark.circle")
-                    }
-
-                    Button(action: testConnection) {
-                        HStack {
-                            Label("Test", systemImage: "antenna.radiowaves.left.and.right")
-                            Spacer()
-                            if isTesting {
-                                ProgressView()
-                                    .scaleEffect(0.7)
-                            } else {
-                                statusIndicator
-                            }
+                Button(action: testConnection) {
+                    HStack {
+                        Label("Test", systemImage: "antenna.radiowaves.left.and.right")
+                        Spacer()
+                        if isTesting {
+                            ProgressView()
+                                .scaleEffect(0.7)
+                        } else {
+                            statusIndicator
                         }
                     }
                 }
             }
-            .navigationTitle("Settings")
         }
+        .navigationTitle("Settings")
         .onAppear(perform: loadSettings)
     }
 
@@ -90,22 +85,17 @@ struct WatchSettingsView: View {
         if let data = UserDefaults.standard.data(forKey: "providerSettings"),
            let settings = try? JSONDecoder().decode(ProviderSettings.self, from: data) {
             providerType = settings.provider
-            serverURL = settings.provider == .openai ? settings.openAIUri : settings.ollamaUri
+            serverURL = settings.openAIUri
             apiKey = settings.openAIKey
         }
     }
 
     private func saveSettings() {
         var settings = ProviderSettings()
-        settings.provider = providerType
-
-        if providerType == .openai {
-            settings.openAIUri = serverURL
-            settings.openAIKey = apiKey
-            OpenAIService.shared.updateEndpoint(url: serverURL, key: apiKey)
-        } else {
-            settings.ollamaUri = serverURL
-        }
+        settings.provider = .openai
+        settings.openAIUri = serverURL
+        settings.openAIKey = apiKey
+        OpenAIService.shared.updateEndpoint(url: serverURL, key: apiKey)
 
         if let encoded = try? JSONEncoder().encode(settings) {
             UserDefaults.standard.set(encoded, forKey: "providerSettings")
@@ -119,12 +109,7 @@ struct WatchSettingsView: View {
         connectionStatus = .unknown
 
         Task {
-            let reachable: Bool
-            if providerType == .openai {
-                reachable = await OpenAIService.shared.reachable()
-            } else {
-                reachable = await OllamaService.shared.reachable()
-            }
+            let reachable = await OpenAIService.shared.reachable()
 
             await MainActor.run {
                 connectionStatus = reachable ? .connected : .failed
