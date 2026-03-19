@@ -14,29 +14,22 @@ struct PersonaEditorView: View {
     @State private var showCreateSheet = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(alignment: .center) {
-                    Text("Personas")
-                        .font(.headline)
-                    Spacer()
-                    Button(action: { showCreateSheet = true }) {
-                        Label("New Persona", systemImage: "plus")
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.small)
-                    .fixedSize()
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .center) {
+                Text("Personas")
+                    .font(.headline)
+                Spacer()
+                Button(action: { showCreateSheet = true }) {
+                    Label("New Persona", systemImage: "plus")
                 }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
+                .fixedSize()
             }
-            .padding(.horizontal)
-            .padding(.top, 12)
 
             Text("Personas wrap a real model with a custom system prompt. Select a Persona from the model picker to use it.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-                .padding(.horizontal)
-                .padding(.top, 4)
-                .padding(.bottom, 8)
 
             if personaStore.personas.isEmpty {
                 VStack(spacing: 8) {
@@ -51,16 +44,16 @@ struct PersonaEditorView: View {
                         .foregroundStyle(.tertiary)
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 24)
+                .padding(.vertical, 16)
             } else {
-                List {
-                    ForEach(personaStore.personas) { persona in
-                        PersonaRowView(persona: persona) {
-                            Task { await personaStore.deletePersona(persona) }
-                        }
+                ForEach(personaStore.personas) { persona in
+                    PersonaRowView(persona: persona) {
+                        Task { await personaStore.deletePersona(persona) }
+                    }
+                    if persona.id != personaStore.personas.last?.id {
+                        Divider()
                     }
                 }
-                .listStyle(.plain)
             }
         }
         .sheet(isPresented: $showCreateSheet) {

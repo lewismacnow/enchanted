@@ -39,144 +39,148 @@ struct DejaViewSettingsView: View {
     ]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 8) {
             Text("DejaView Settings")
                 .font(.headline)
-                .padding(.horizontal)
-                .padding(.top, 12)
 
             Text("Configure screen capture behaviour and vector store backend.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-                .padding(.horizontal)
-                .padding(.top, 4)
-                .padding(.bottom, 8)
 
-            Form {
-                // MARK: - Capture Section
-                Section("Capture") {
-                    #if os(macOS)
-                    HStack {
-                        Toggle("Enable Capture", isOn: Binding(
-                            get: { dejaViewStore.isCapturing },
-                            set: { enabled in
-                                if enabled {
-                                    dejaViewStore.startCapturing()
-                                } else {
-                                    dejaViewStore.stopCapturing()
-                                }
-                            }
-                        ))
+            // MARK: - Capture Settings
 
-                        Spacer()
-
-                        captureStatusBadge
-                    }
-                    #else
-                    HStack {
-                        Text("Screen capture")
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        Text("macOS only")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                    }
-                    #endif
-
-                    Picker("Capture Interval", selection: Binding(
-                        get: { dejaViewStore.captureInterval },
-                        set: { dejaViewStore.captureInterval = $0 }
-                    )) {
-                        ForEach(intervalOptions, id: \.value) { option in
-                            Text(option.label).tag(option.value)
+            #if os(macOS)
+            HStack {
+                Toggle("Enable Capture", isOn: Binding(
+                    get: { dejaViewStore.isCapturing },
+                    set: { enabled in
+                        if enabled {
+                            dejaViewStore.startCapturing()
+                        } else {
+                            dejaViewStore.stopCapturing()
                         }
                     }
+                ))
 
-                    Picker("Retention Period", selection: Binding(
-                        get: { dejaViewStore.retentionDays },
-                        set: { dejaViewStore.retentionDays = $0 }
-                    )) {
-                        ForEach(retentionOptions, id: \.value) { option in
-                            Text(option.label).tag(option.value)
-                        }
-                    }
+                Spacer()
 
-                    VStack(alignment: .leading, spacing: 4) {
-                        TextField("Vision Model (optional)", text: $visionModel)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .onChange(of: visionModel) { _, newValue in
-                                UserDefaults.standard.set(newValue, forKey: "dejaViewVisionModel")
-                            }
-                        Text("e.g. \"llava:latest\" or \"gpt-4o\". When set, screenshots are described by this vision model for richer search. Leave empty to use OCR text only.")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                    }
-
-                    VStack(alignment: .leading, spacing: 4) {
-                        TextField("Embedding Model (optional)", text: $embeddingModel)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .onChange(of: embeddingModel) { _, newValue in
-                                UserDefaults.standard.set(newValue, forKey: "dejaViewEmbeddingModel")
-                            }
-                        Text("Text embedding model for vector search. Default: \"\(EmbeddingService.defaultOllamaModel)\" (Ollama) or \"\(EmbeddingService.defaultOpenAIModel)\" (OpenAI). Changing this requires re-indexing existing captures.")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                    }
-                }
-
-                Section(header: Text("Pipeline").font(.subheadline)) {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Label("1. OCR extracts text from screenshots (Apple Vision, built-in)", systemImage: "doc.text.viewfinder")
-                            .font(.caption)
-                        Label("2. Vision model describes visual content (optional, slower)", systemImage: "eye")
-                            .font(.caption)
-                        Label("3. Text embedding model creates vectors for search", systemImage: "arrow.triangle.branch")
-                            .font(.caption)
-                        Label("4. Vectors stored in selected backend for similarity search", systemImage: "cylinder")
-                            .font(.caption)
-                    }
+                captureStatusBadge
+            }
+            .padding(.vertical, 4)
+            #else
+            HStack {
+                Text("Screen capture")
                     .foregroundStyle(.secondary)
-                    .padding(.vertical, 4)
-                }
+                Spacer()
+                Text("macOS only")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.vertical, 4)
+            #endif
 
-                // MARK: - Vector Store Section
-                Section("Vector Store") {
-                    Picker("Backend", selection: Binding(
-                        get: { dejaViewStore.vectorStoreType },
-                        set: { dejaViewStore.vectorStoreType = $0 }
-                    )) {
-                        ForEach(vectorStoreOptions, id: \.value) { option in
-                            Text(option.label).tag(option.value)
-                        }
-                    }
-
-                    if dejaViewStore.vectorStoreType != "local" {
-                        connectionFields
-                    }
-                }
-
-                // MARK: - Info Section
-                Section("Status") {
-                    HStack {
-                        Text("Stored captures")
-                        Spacer()
-                        Text("\(dejaViewStore.captures.count)")
-                            .foregroundStyle(.secondary)
-                    }
-
-                    HStack {
-                        Text("Vector store")
-                        Spacer()
-                        Text(currentVectorStoreLabel)
-                            .font(.caption)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color.secondary.opacity(0.15))
-                            .clipShape(Capsule())
-                    }
+            Picker("Capture Interval", selection: Binding(
+                get: { dejaViewStore.captureInterval },
+                set: { dejaViewStore.captureInterval = $0 }
+            )) {
+                ForEach(intervalOptions, id: \.value) { option in
+                    Text(option.label).tag(option.value)
                 }
             }
-            .formStyle(.grouped)
+
+            Picker("Retention Period", selection: Binding(
+                get: { dejaViewStore.retentionDays },
+                set: { dejaViewStore.retentionDays = $0 }
+            )) {
+                ForEach(retentionOptions, id: \.value) { option in
+                    Text(option.label).tag(option.value)
+                }
+            }
+
+            Divider()
+
+            // MARK: - Models
+
+            VStack(alignment: .leading, spacing: 4) {
+                TextField("Vision Model (optional)", text: $visionModel)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .onChange(of: visionModel) { _, newValue in
+                        UserDefaults.standard.set(newValue, forKey: "dejaViewVisionModel")
+                    }
+                Text("e.g. \"llava:latest\" or \"gpt-4o\". When set, screenshots are described by this vision model for richer search. Leave empty to use OCR text only.")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                TextField("Embedding Model (optional)", text: $embeddingModel)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .onChange(of: embeddingModel) { _, newValue in
+                        UserDefaults.standard.set(newValue, forKey: "dejaViewEmbeddingModel")
+                    }
+                Text("Text embedding model for vector search. Default: \"\(EmbeddingService.defaultOllamaModel)\" (Ollama) or \"\(EmbeddingService.defaultOpenAIModel)\" (OpenAI).")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+
+            Divider()
+
+            // MARK: - Pipeline Info
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Pipeline")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+
+                Label("1. OCR extracts text from screenshots", systemImage: "doc.text.viewfinder")
+                    .font(.caption)
+                Label("2. Vision model describes visual content (optional)", systemImage: "eye")
+                    .font(.caption)
+                Label("3. Text embedding model creates vectors for search", systemImage: "arrow.triangle.branch")
+                    .font(.caption)
+                Label("4. Vectors stored in selected backend", systemImage: "cylinder")
+                    .font(.caption)
+            }
+            .foregroundStyle(.secondary)
+
+            Divider()
+
+            // MARK: - Vector Store
+
+            Picker("Vector Store Backend", selection: Binding(
+                get: { dejaViewStore.vectorStoreType },
+                set: { dejaViewStore.vectorStoreType = $0 }
+            )) {
+                ForEach(vectorStoreOptions, id: \.value) { option in
+                    Text(option.label).tag(option.value)
+                }
+            }
+
+            if dejaViewStore.vectorStoreType != "local" {
+                connectionFields
+            }
+
+            Divider()
+
+            // MARK: - Status
+
+            HStack {
+                Text("Stored captures")
+                Spacer()
+                Text("\(dejaViewStore.captures.count)")
+                    .foregroundStyle(.secondary)
+            }
+
+            HStack {
+                Text("Vector store")
+                Spacer()
+                Text(currentVectorStoreLabel)
+                    .font(.caption)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Color.secondary.opacity(0.15))
+                    .clipShape(Capsule())
+            }
         }
         .task {
             await dejaViewStore.loadCaptures()

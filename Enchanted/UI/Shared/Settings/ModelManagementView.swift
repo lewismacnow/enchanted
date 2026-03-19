@@ -22,25 +22,29 @@ struct ModelManagementView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 8) {
             Text("Models")
                 .font(.headline)
-                .padding(.horizontal)
-                .padding(.top, 12)
 
             Text("Toggle visibility to hide models from the chat selector. Embedding models and unused models can be hidden.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-                .padding(.horizontal)
-                .padding(.top, 4)
-                .padding(.bottom, 8)
 
             TextField("Search models...", text: $searchText)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
-                .padding(.bottom, 8)
 
-            List {
+            if filteredModels.isEmpty {
+                VStack(spacing: 8) {
+                    Image(systemName: "cpu")
+                        .font(.largeTitle)
+                        .foregroundStyle(.secondary)
+                    Text(searchText.isEmpty ? "No models loaded" : "No matching models")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+            } else {
                 ForEach(filteredModels, id: \.name) { model in
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
@@ -81,9 +85,12 @@ struct ModelManagementView: View {
                         .help(model.isHidden ? "Show in model selector" : "Hide from model selector")
                     }
                     .padding(.vertical, 4)
+
+                    if model.name != filteredModels.last?.name {
+                        Divider()
+                    }
                 }
             }
-            .listStyle(.plain)
         }
     }
 }
