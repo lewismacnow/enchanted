@@ -44,7 +44,7 @@ actor LocalVectorStore: VectorStore {
     func search(
         query: [Float],
         topK: Int,
-        filter: ((String, [String: String]) -> Bool)?
+        filter: (@Sendable (String, [String: String]) -> Bool)?
     ) async throws -> [(id: String, score: Float, metadata: [String: String])] {
         var results: [(id: String, score: Float, metadata: [String: String])] = []
 
@@ -88,9 +88,11 @@ actor LocalVectorStore: VectorStore {
             normB += b[i] * b[i]
         }
 
+        guard normA > 0, normB > 0 else { return 0.0 }
         let denominator = sqrtf(normA) * sqrtf(normB)
-        guard denominator > 0 else { return 0.0 }
+        guard denominator.isFinite, denominator > 0 else { return 0.0 }
 
-        return dot / denominator
+        let result = dot / denominator
+        return result.isFinite ? result : 0.0
     }
 }

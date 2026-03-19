@@ -8,7 +8,7 @@ import Foundation
 // MARK: - MCP Server Configuration
 
 /// Configuration for an MCP server process.
-public struct MCPServerConfig: Codable {
+public struct MCPServerConfig: Codable, Sendable {
     public let name: String
     public let command: String
     public let args: [String]

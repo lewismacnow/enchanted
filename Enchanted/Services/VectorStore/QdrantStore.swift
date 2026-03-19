@@ -125,7 +125,7 @@ class QdrantStore: VectorStore, @unchecked Sendable {
     func search(
         query: [Float],
         topK: Int,
-        filter: ((String, [String: String]) -> Bool)?
+        filter: (@Sendable (String, [String: String]) -> Bool)?
     ) async throws -> [(id: String, score: Float, metadata: [String: String])] {
         let body = QdrantSearchRequest(
             vector: query,

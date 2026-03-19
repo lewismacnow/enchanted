@@ -198,11 +198,13 @@ final class DejaViewStore: @unchecked Sendable {
                     textMatched = textMatched.filter { range.contains($0.capture.timestamp) }
                 }
 
-                await MainActor.run { self.searchResults = textMatched }
+                nonisolated(unsafe) let finalTextResults = textMatched
+                await MainActor.run { self.searchResults = finalTextResults }
                 return
             }
 
-            await MainActor.run { self.searchResults = matched }
+            nonisolated(unsafe) let finalResults = matched
+            await MainActor.run { self.searchResults = finalResults }
         } catch {
             print("Failed to search: \(error)")
         }
@@ -211,12 +213,13 @@ final class DejaViewStore: @unchecked Sendable {
     // MARK: - Delete
 
     func deleteCapture(_ capture: ScreenCaptureSD) async {
+        let captureId = capture.id
         do {
-            try await vectorStore.delete(id: capture.id.uuidString)
+            try await vectorStore.delete(id: captureId.uuidString)
             try await swiftDataService.deleteScreenCapture(capture)
             await loadCaptures()
             await MainActor.run {
-                self.searchResults.removeAll { $0.capture.id == capture.id }
+                self.searchResults.removeAll { $0.capture.id == captureId }
             }
         } catch {
             print("Failed to delete capture: \(error)")

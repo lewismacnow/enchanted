@@ -29,6 +29,9 @@ class MCPClient: @unchecked Sendable {
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
 
+    /// Buffer for partial line reads from stdout.
+    private var readBuffer = Data()
+
     init(config: MCPServerConfig) {
         self.config = config
     }
@@ -65,6 +68,7 @@ class MCPClient: @unchecked Sendable {
         self.process = proc
         self.stdinPipe = stdin
         self.stdoutPipe = stdout
+        self.readBuffer = Data()
     }
 
     func stop() {
@@ -74,6 +78,7 @@ class MCPClient: @unchecked Sendable {
         process = nil
         stdinPipe = nil
         stdoutPipe = nil
+        readBuffer = Data()
     }
 
     // MARK: - JSON-RPC Transport
@@ -94,23 +99,33 @@ class MCPClient: @unchecked Sendable {
 
         stdinPipe.fileHandleForWriting.write(data)
 
-        // Read one line from stdout
+        // Read one newline-delimited JSON response using buffered reads
         let fileHandle = stdoutPipe.fileHandleForReading
         let responseData = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Data, Error>) in
-            DispatchQueue.global().async {
-                var buffer = Data()
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                guard let self = self else {
+                    continuation.resume(throwing: MCPClientError(message: "Client deallocated"))
+                    return
+                }
+
+                // Read in chunks until we find a newline
                 while true {
-                    let byte = fileHandle.readData(ofLength: 1)
-                    if byte.isEmpty {
+                    // Check if buffer already contains a complete line
+                    if let newlineIndex = self.readBuffer.firstIndex(of: UInt8(ascii: "\n")) {
+                        let lineData = self.readBuffer[self.readBuffer.startIndex..<newlineIndex]
+                        self.readBuffer = Data(self.readBuffer[(newlineIndex + 1)...])
+                        continuation.resume(returning: Data(lineData))
+                        return
+                    }
+
+                    // Read a chunk of data (up to 4KB at a time)
+                    let chunk = fileHandle.readData(ofLength: 4096)
+                    if chunk.isEmpty {
                         continuation.resume(throwing: MCPClientError(message: "MCP process closed stdout"))
                         return
                     }
-                    if byte[0] == UInt8(ascii: "\n") {
-                        break
-                    }
-                    buffer.append(byte)
+                    self.readBuffer.append(chunk)
                 }
-                continuation.resume(returning: buffer)
             }
         }
 

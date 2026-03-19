@@ -100,7 +100,7 @@ class PgVectorStore: VectorStore, @unchecked Sendable {
     func search(
         query: [Float],
         topK: Int,
-        filter: ((String, [String: String]) -> Bool)?
+        filter: (@Sendable (String, [String: String]) -> Bool)?
     ) async throws -> [(id: String, score: Float, metadata: [String: String])] {
         let body = PgSearchRequest(query_embedding: query, top_k: topK)
         let data = try await postRequest(path: "/rpc/search_embeddings", body: body)

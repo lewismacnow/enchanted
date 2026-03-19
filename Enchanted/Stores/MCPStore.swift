@@ -68,7 +68,7 @@ final class MCPStore: @unchecked Sendable {
 
         let configs: [MCPServerConfig] = await MainActor.run { self.servers }
 
-        var allTools: [MCPToolDefinition] = []
+        var collectedTools: [MCPToolDefinition] = []
 
         for config in configs {
             do {
@@ -81,14 +81,15 @@ final class MCPStore: @unchecked Sendable {
                 for tool in tools {
                     toolServerMap[tool.name] = config.name
                 }
-                allTools.append(contentsOf: tools)
+                collectedTools.append(contentsOf: tools)
             } catch {
                 print("Failed to connect MCP server '\(config.name)': \(error)")
             }
         }
 
+        nonisolated(unsafe) let finalTools = collectedTools
         await MainActor.run {
-            self.availableTools = allTools
+            self.availableTools = finalTools
         }
     }
 
