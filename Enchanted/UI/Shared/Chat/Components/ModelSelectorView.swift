@@ -70,6 +70,8 @@ struct ModelSelectorView: View {
                     .foregroundColor(Color(.label))
                     .showIf(showChevron)
             }
+            .accessibilityLabel("Select model")
+            .accessibilityHint("Opens model picker with available LLM models")
         }
     }
 }

@@ -125,6 +125,17 @@ struct ChatView: View {
             }
         }
         .navigationTitle("")
+#if os(macOS)
+        .focusedSceneValue(\.focusInput) {
+            isFocusedInput = true
+        }
+        .focusedSceneValue(\.newConversation) {
+            onNewConversationTap()
+        }
+        .focusedSceneValue(\.exportChat) {
+            copyChat(false)
+        }
+#endif
         .onChange(of: editMessage, initial: false) { _, newMessage in
             if let newMessage = newMessage {
                 message = newMessage.content

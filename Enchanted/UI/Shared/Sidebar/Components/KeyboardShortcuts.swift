@@ -19,7 +19,10 @@ struct KeyboardShortcutsDemo: View {
         KeyboardShortcut(id: 1, keys: ["⌃", "⌘", "K"], description: "Open Panel Window"),
         KeyboardShortcut(id: 2, keys: ["⌘", "N"], description: "New Conversation"),
         KeyboardShortcut(id: 3, keys: ["⌘", "⌥", "S"], description: "Hide/Show sidebar"),
-        KeyboardShortcut(id: 4, keys: ["⌘", "V"], description: "Paste text or image from clipboard into message box ")
+        KeyboardShortcut(id: 4, keys: ["⌘", "V"], description: "Paste text or image from clipboard"),
+        KeyboardShortcut(id: 5, keys: ["⌘", "/"], description: "Focus message input"),
+        KeyboardShortcut(id: 6, keys: ["⌘", "E"], description: "Export chat to clipboard"),
+        KeyboardShortcut(id: 7, keys: ["⌘", ","], description: "Open Settings"),
     ]
     
     private func close() {
